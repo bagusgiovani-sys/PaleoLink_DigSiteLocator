@@ -12,7 +12,16 @@ body {
   position: relative;
   background-color: black;
   color: white;
+  cursor: none;
+  
 
 
+}
 
+a,
+button,
+input,
+textarea,
+select {
+  cursor: none;
 }
