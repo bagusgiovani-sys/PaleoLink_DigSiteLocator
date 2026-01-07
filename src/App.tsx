@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MapPin, Users, Wrench, Gem, X } from 'lucide-react';
 
 const DigSiteLocator = () => {
-  const [selectedSite, setSelectedSite] = useState<any>(null);
+  const [selectedSite, setSelectedSite] = useState<any>(null); /* #Pls dont use any */
   const [animatingItems, setAnimatingItems] = useState<any>({});
   const panelRef = useRef<HTMLDivElement>(null);
 
