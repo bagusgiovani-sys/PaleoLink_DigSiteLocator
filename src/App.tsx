@@ -160,7 +160,7 @@ const DigSiteLocator = () => {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-5xl font-bold text-cyan-400 mb-2 tracking-wider">
-            DIG SITE LOCATOR
+            PALEO LINK
           </h1>
           <div className="h-1 w-64 mx-auto bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
           <p className="text-cyan-200 mt-3 text-sm tracking-widest">GLOBAL EXCAVATION NETWORK</p>
