@@ -118,7 +118,7 @@ const DigSiteLocator = () => {
       id: 1,
       name: "EMRE BRAY",
       title: "Logistics",
-      photo: "public/assets/scientist1",
+      photo: "/assets/scientist1",
       logistics: { current: 1, max: 4 },
       genetics: { current: 2, max: 5 },
       welfare: { current: 1, max: 5 },
@@ -132,7 +132,7 @@ const DigSiteLocator = () => {
       id: 2,
       name: "PATRICK CROWTHER",
       title: "Logistics",
-      photo: "public/assets/scientist2",
+      photo: "/assets/scientist2",
       logistics: { current: 1, max: 5 },
       genetics: { current: 2, max: 3 },
       welfare: { current: 2, max: 5 },
@@ -146,7 +146,7 @@ const DigSiteLocator = () => {
       id: 3,
       name: "HYEJIN SEO",
       title: "Logistics",
-      photo: "public/assets/scientist3",
+      photo: "/assets/scientist3",
       logistics: { current: 1, max: 5 },
       genetics: { current: 1, max: 3 },
       welfare: { current: 4, max: 9 },
@@ -160,7 +160,7 @@ const DigSiteLocator = () => {
       id: 4,
       name: "ANEEGA SAFAR",
       title: "Logistics",
-      photo: "public/assets/scientist4",
+      photo: "/assets/scientist4",
       logistics: { current: 2, max: 8 },
       genetics: { current: 1, max: 3 },
       welfare: { current: 0, max: 4 },
@@ -266,7 +266,7 @@ const DigSiteLocator = () => {
         alertMessage: "Severe thunderstorm warning - Document all findings immediately"
       },
       has3DModel: true,
-      modelPath: "public/assets/model1",
+      modelPath: "/assets/model1",
       modelDescription: "Complete Stegosaurus skeleton - 95% intact",
       safetyProfile: {
         groundType: 'Rocky',
@@ -294,7 +294,7 @@ const DigSiteLocator = () => {
         alertMessage: ""
       },
       has3DModel: true,
-      modelPath: "public/assets/model2",
+      modelPath: "/assets/model2",
       modelDescription: "T-Rex skull fragment - Excellent preservation",
       safetyProfile: {
         groundType: 'Clay',
@@ -350,7 +350,7 @@ const DigSiteLocator = () => {
         alertMessage: "Typhoon approaching - Emergency documentation protocol activated"
       },
       has3DModel: true,
-      modelPath: "public/assets/model3",
+      modelPath: "/assets/model3",
       modelDescription: "Velociraptor nest with eggs - Rare find",
       safetyProfile: {
         groundType: 'Sand',
@@ -378,7 +378,7 @@ const DigSiteLocator = () => {
         alertMessage: "Heavy rainfall expected - Secure all documentation"
       },
       has3DModel: true,
-      modelPath: "public/assets/model4",
+      modelPath: "/assets/model4",
       modelDescription: "Complete temple structure scan - High resolution",
       safetyProfile: {
         groundType: 'Rocky',
@@ -623,7 +623,7 @@ const DigSiteLocator = () => {
         >
           <motion.h1
             className="text-7xl font-bold text-cyan-300 mb-4 tracking-wider"
-            animate={{ 
+            animate={{
               textShadow: [
                 "0 0 20px rgba(34, 211, 238, 0.5)",
                 "0 0 40px rgba(34, 211, 238, 0.8)",
@@ -721,8 +721,8 @@ const DigSiteLocator = () => {
             <button
               onClick={() => setMainTab('expedition')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'expedition'
-                  ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
-                  : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
+                ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
+                : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
                 }`}
             >
               <Map className="w-4 h-4 md:w-5 md:h-5" />
@@ -731,8 +731,8 @@ const DigSiteLocator = () => {
             <button
               onClick={() => setMainTab('scientists')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'scientists'
-                  ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
-                  : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
+                ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
+                : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
                 }`}
             >
               <FlaskConical className="w-4 h-4 md:w-5 md:h-5" />
@@ -741,8 +741,8 @@ const DigSiteLocator = () => {
             <button
               onClick={() => setMainTab('marketplace')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'marketplace'
-                  ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
-                  : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
+                ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
+                : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
                 }`}
             >
               <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
@@ -751,8 +751,8 @@ const DigSiteLocator = () => {
             <button
               onClick={() => setMainTab('pathfinder')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'pathfinder'
-                  ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
-                  : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
+                ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
+                : 'text-gray-400 hover:text-cyan-300 hover:bg-slate-800/50'
                 }`}
             >
               <Navigation className="w-4 h-4 md:w-5 md:h-5" />
@@ -898,14 +898,14 @@ const DigSiteLocator = () => {
                                     </p>
                                     <div className={`mt-2 flex gap-2 ${animatingItems.status ? 'animate-scale-in' : 'item-hidden'}`}>
                                       <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${site.status === 'Active'
-                                          ? 'bg-green-500/20 text-green-400 border border-green-500/50'
-                                          : 'bg-blue-500/20 text-blue-400 border border-blue-500/50'
+                                        ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                                        : 'bg-blue-500/20 text-blue-400 border border-blue-500/50'
                                         }`}>
                                         {site.status}
                                       </span>
                                       <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${site.weather.severity === 'good' ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
-                                          site.weather.severity === 'warning' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
-                                            'bg-red-500/20 text-red-400 border border-red-500/50'
+                                        site.weather.severity === 'warning' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                                          'bg-red-500/20 text-red-400 border border-red-500/50'
                                         }`}>
                                         {site.weather.temperature}°F • {site.weather.condition}
                                       </span>
@@ -930,8 +930,8 @@ const DigSiteLocator = () => {
                                 {site.weather.alert && (
                                   <div className={`mb-3 ${animatingItems.weather ? 'animate-slide-bottom' : 'item-hidden'}`}>
                                     <div className={`rounded p-3 border ${site.weather.severity === 'catastrophic'
-                                        ? 'bg-red-500/10 border-red-500/50'
-                                        : 'bg-yellow-500/10 border-yellow-500/50'
+                                      ? 'bg-red-500/10 border-red-500/50'
+                                      : 'bg-yellow-500/10 border-yellow-500/50'
                                       }`}>
                                       <div className="flex items-start gap-2">
                                         <AlertTriangle className={`w-4 h-4 mt-0.5 ${site.weather.severity === 'catastrophic' ? 'text-red-400' : 'text-yellow-400'}`} />
@@ -961,8 +961,8 @@ const DigSiteLocator = () => {
                                   <button
                                     onClick={() => setActiveTab('details')}
                                     className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'details'
-                                        ? 'text-cyan-400 border-b-2 border-cyan-400'
-                                        : 'text-gray-400 hover:text-cyan-300'
+                                      ? 'text-cyan-400 border-b-2 border-cyan-400'
+                                      : 'text-gray-400 hover:text-cyan-300'
                                       }`}
                                   >
                                     Site Details
@@ -970,8 +970,8 @@ const DigSiteLocator = () => {
                                   <button
                                     onClick={() => setActiveTab('safety')}
                                     className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'safety'
-                                        ? 'text-cyan-400 border-b-2 border-cyan-400'
-                                        : 'text-gray-400 hover:text-cyan-300'
+                                      ? 'text-cyan-400 border-b-2 border-cyan-400'
+                                      : 'text-gray-400 hover:text-cyan-300'
                                       }`}
                                   >
                                     Safety Profile
@@ -979,8 +979,8 @@ const DigSiteLocator = () => {
                                   <button
                                     onClick={() => setActiveTab('model')}
                                     className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'model'
-                                        ? 'text-cyan-400 border-b-2 border-cyan-400'
-                                        : 'text-gray-400 hover:text-cyan-300'
+                                      ? 'text-cyan-400 border-b-2 border-cyan-400'
+                                      : 'text-gray-400 hover:text-cyan-300'
                                       }`}
                                   >
                                     3D Data
@@ -1223,14 +1223,14 @@ const DigSiteLocator = () => {
             >
               <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
                 <h2 className="text-xl md:text-2xl font-bold text-cyan-400 mb-4 md:mb-6 tracking-wide">RECRUITMENT</h2>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   {scientists.map((scientist) => (
                     <div key={scientist.id} className="bg-slate-900/60 rounded-lg border border-cyan-500/20 overflow-hidden hover:border-cyan-500/50 transition-all">
                       <div className="p-4">
                         <div className="text-teal-400 text-xs font-semibold mb-1 tracking-wide">{scientist.name.split(' ')[0]}</div>
                         <div className="text-teal-300 text-lg font-bold mb-3">{scientist.name.split(' ')[1]}</div>
-                        
+
                         <ImageWithFallback src={scientist.photo} alt={scientist.name} className="bg-slate-800/50 rounded mb-3 aspect-[3/4] overflow-hidden border border-slate-700" />
 
                         <div className="space-y-2 mb-4 text-xs">
@@ -1308,7 +1308,7 @@ const DigSiteLocator = () => {
                             <Gem className="w-6 h-6 md:w-8 md:h-8 text-slate-600" />
                           </div>
                         </div>
-                        
+
                         <div className="col-span-4 md:col-span-3">
                           <div className="text-cyan-400 font-bold text-xs md:text-sm mb-1">{item.name}</div>
                           <div className="flex items-center gap-2">
@@ -1433,29 +1433,25 @@ const DigSiteLocator = () => {
                     };
 
                     return (
-                      <div key={site.id} className={`rounded-lg border overflow-hidden ${
-                        site.weather.severity === 'catastrophic'
+                      <div key={site.id} className={`rounded-lg border overflow-hidden ${site.weather.severity === 'catastrophic'
                           ? 'border-red-500/40 bg-red-500/5'
                           : 'border-yellow-500/40 bg-yellow-500/5'
-                      }`}>
-                        {/* Site Header */}
-                        <div className={`px-4 py-3 flex items-center justify-between ${
-                          site.weather.severity === 'catastrophic' ? 'bg-red-500/15' : 'bg-yellow-500/15'
                         }`}>
+                        {/* Site Header */}
+                        <div className={`px-4 py-3 flex items-center justify-between ${site.weather.severity === 'catastrophic' ? 'bg-red-500/15' : 'bg-yellow-500/15'
+                          }`}>
                           <div className="flex items-center gap-3">
-                            <div className={`w-2 h-2 rounded-full animate-pulse ${
-                              site.weather.severity === 'catastrophic' ? 'bg-red-400' : 'bg-yellow-400'
-                            }`}></div>
+                            <div className={`w-2 h-2 rounded-full animate-pulse ${site.weather.severity === 'catastrophic' ? 'bg-red-400' : 'bg-yellow-400'
+                              }`}></div>
                             <div>
                               <p className="text-white font-bold text-sm">{site.name}</p>
                               <p className="text-gray-400 text-xs">{site.location} • {site.weather.condition.toUpperCase()} • {site.weather.temperature}°F</p>
                             </div>
                           </div>
-                          <div className={`px-2 py-1 rounded text-xs font-bold ${
-                            site.weather.severity === 'catastrophic'
+                          <div className={`px-2 py-1 rounded text-xs font-bold ${site.weather.severity === 'catastrophic'
                               ? 'bg-red-500/30 text-red-400'
                               : 'bg-yellow-500/30 text-yellow-400'
-                          }`}>
+                            }`}>
                             {site.weather.severity.toUpperCase()}
                           </div>
                         </div>
@@ -1476,14 +1472,12 @@ const DigSiteLocator = () => {
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {resources.map((resource, idx) => (
-                              <div key={idx} className={`rounded-lg p-3 border flex items-start gap-3 ${
-                                resource.available
+                              <div key={idx} className={`rounded-lg p-3 border flex items-start gap-3 ${resource.available
                                   ? 'bg-slate-800/60 border-slate-700/60'
                                   : 'bg-slate-900/40 border-slate-800/40 opacity-60'
-                              }`}>
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                                  resource.available ? 'bg-cyan-500/20' : 'bg-slate-700/50'
                                 }`}>
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${resource.available ? 'bg-cyan-500/20' : 'bg-slate-700/50'
+                                  }`}>
                                   <resource.icon className={`w-4 h-4 ${resource.available ? 'text-cyan-400' : 'text-gray-500'}`} />
                                 </div>
                                 <div className="flex-1 min-w-0">
