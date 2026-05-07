@@ -102,3 +102,133 @@ src/
 - Verified: `npm run build` passes cleanly (no regressions)
 **Pending:** Section 2 — Component Architecture (splitting DigSiteLocator into feature components)
 **Blockers:** None.
+
+---
+### [2026-05-07 — Session End / Handoff Notes]
+
+## CRITICAL CONTEXT FOR NEXT SESSION — READ THIS FIRST
+
+### What this project actually is
+- **PaleoLink Beta** — a paleontology expedition management SPA
+- **Stack:** Vite 6 + React 18 + TypeScript (strict) + Tailwind CSS 3 + Framer Motion 12 + Lucide React
+- **NOT Next.js** — the original review prompt said Next.js but this is a plain Vite SPA
+- **No Redux, no TanStack Query, no backend, no API** — all data is hardcoded
+- **Git remote:** `https://github.com/bagusgiovani-sys/PaleoLink_DigSiteLocator.git` (branch: `main`)
+- **Build command:** `npm run build` — passes cleanly as of session end
+- **TypeScript check:** Use `.\node_modules\.bin\tsc --noEmit` (PowerShell) — Vite doesn't run tsc on build
+
+### Current file state (as of session end)
+```
+src/
+  App.tsx              ← ~1,424 lines — still monolithic, but now has proper imports
+  main.tsx             ← untouched — imports App as default from ./App
+  index.css            ← untouched
+  types/
+    index.ts           ← NEW — WeatherCondition, SiteType, WeatherSeverity, MainTab,
+                                SafetyProfile, DigSite, Scientist, MarketItem
+  constants/
+    extensions.ts      ← NEW — EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
+  components/
+    shared/
+      ImageWithFallback.tsx  ← NEW — moved from top of App.tsx; imports EXTENSIONS from constants
+  features/
+    expedition/components/   ← EMPTY (scaffold only, .gitkeep)
+    expedition/hooks/        ← EMPTY (scaffold only, .gitkeep)
+    expedition/utils/        ← EMPTY (scaffold only, .gitkeep)
+    scientists/components/   ← EMPTY (scaffold only, .gitkeep)
+    marketplace/components/  ← EMPTY (scaffold only, .gitkeep)
+    pathfinder/components/   ← EMPTY (scaffold only, .gitkeep)
+  hooks/               ← EMPTY (scaffold only, .gitkeep)
+  utils/               ← EMPTY (scaffold only, .gitkeep)
+  assets/
+    react.svg          ← UNUSED (Vite default, flag in Section 6)
+```
+
+### What's still inside App.tsx (what Section 2 needs to split out)
+The component exported is named `DigSiteLocator` (main.tsx imports it as `App` — minor inconsistency to fix in Section 2).
+
+**State (all useState, all inside DigSiteLocator):**
+- `selectedSite: DigSite | null` — which map pin is open
+- `animatingItems: Record<string, boolean>` — staggered panel entry animations
+- `activeTab: 'details' | 'model' | 'safety'` — inner tab in the site detail panel
+- `mainTab: MainTab` — top-level nav tab (expedition/scientists/marketplace/pathfinder)
+- `showIntro: boolean` — intro splash screen (auto-hides after 3s)
+- `showModel: boolean` — whether the 3D model image is loaded in the panel
+- `panelRef: useRef<HTMLDivElement>` — direct DOM manipulation for panel open/close animation
+
+**Data arrays (hardcoded inside DigSiteLocator, NOT in constants yet):**
+- `scientists: Scientist[]` — 4 scientists (lines ~17–173 of current App.tsx)
+- `marketItems: MarketItem[]` — 4 market items (lines ~175–224)
+- `digSites: DigSite[]` — 6 dig sites with full weather/safety/model data (lines ~250–419)
+
+**Helper functions (defined inside DigSiteLocator):**
+- `calculateSafetyRisk(profile: SafetyProfile)` → `{ level, color, textColor, borderColor }` — computes risk level from 5 factors (score 0–12)
+- `getWeatherColor(severity: WeatherSeverity)` → Tailwind bg class string
+- `getWeatherIcon(condition: WeatherCondition)` → JSX icon element
+- `getSiteIcon(type: SiteType, status: string)` → JSX icon element
+
+**Inner component (defined inside DigSiteLocator):**
+- `WeatherAnimation({ condition })` — renders Framer Motion weather particles; has 5 cases (rainy, thunderstorm, flood, sunny, typhoon); `default` returns null
+
+**Two useEffect hooks:**
+1. Fires on `selectedSite` change → resets animatingItems + activeTab + showModel, manually sets panelRef styles, then runs 6 staggered setTimeout calls to animate panel sections in
+2. Fires once on mount → sets a 3s timeout to hide the intro splash (`setShowIntro(false)`)
+
+**Render structure:**
+```
+if (showIntro) → return <IntroSplash />  (full-screen animated logo, auto-dismisses)
+
+return <main layout>
+  <Header />                             — "PALEO LINK" title + tagline
+  <MainTabNav />                         — 4 buttons: Expedition/Scientists/Marketplace/Pathfinder
+  <AnimatePresence>
+    {mainTab === 'expedition'} →
+      <WorldMap>                         — bg image + SVG grid + weather animation layer
+        {digSites.map(site =>
+          <SiteMarker />                 — animated ping circle + icon button
+          {selectedSite === site →
+            createPortal(<SiteDetailPanel />, document.body)
+            — tabs: Site Details | Safety Profile | 3D Data
+          }
+        )}
+      </WorldMap>
+      <StatsFooter />                    — 4 stat boxes (active/alerts/models/critical)
+
+    {mainTab === 'scientists'} →
+      {scientists.map(s => <ScientistCard />)}
+
+    {mainTab === 'marketplace'} →
+      {marketItems.map(i => <MarketItemRow />)}
+
+    {mainTab === 'pathfinder'} →
+      <AlertSummaryBar />                — 3 counters (critical/warning/matched)
+      {digSites.filter(alert).map(site =>
+        <SiteResourceCard />             — per-site resource list, resourceMap keyed by weather condition
+      )}
+  </AnimatePresence>
+```
+
+### Specific things to note for Section 2
+1. **The site detail panel uses `createPortal`** — it renders into `document.body` to escape map container stacking contexts. Keep this; it's intentional.
+2. **`panelRef` direct DOM manipulation** — the open/close animation imperatively sets `style.opacity` and `style.transform`. This is a deliberate choice to avoid Framer Motion re-mounting the portal content. Do NOT replace with state-based animation without testing carefully.
+3. **`WeatherAnimation` inner component** — it's defined inside `DigSiteLocator`. Move to `src/features/expedition/utils/WeatherAnimation.tsx` in Section 2.
+4. **`resourceMap` in Pathfinder** — a large `Record<string, {...}>` defined inline inside the `.map()` callback. Move to `src/features/pathfinder/constants.ts` in Section 2.
+5. **`calculateSafetyRisk` and weather helpers** — pure functions with no React dependencies; move to `src/features/expedition/utils/safetyHelpers.ts` and `src/features/expedition/utils/weatherHelpers.ts`.
+6. **The two useEffect hooks** — extract to `src/hooks/useIntroSplash.ts` (the 3s timer) and `src/features/expedition/hooks/useDigSitePanel.ts` (the complex panel animation effect).
+
+### Deferred issues (for later sections)
+- **Section 6:** `DollarSign`, `TrendingUp` unused in lucide-react import line of App.tsx
+- **Section 6:** `src/assets/react.svg` unused Vite default
+- **Section 5:** `Math.random()` calls inside `WeatherAnimation` re-run on every render — positions not memoized
+- **Section 10:** Close (X) button in site detail panel has no `aria-label`
+- **Section 10:** Map site marker buttons have no accessible label
+- **Section 10:** "Document" and "Satellite Scan" buttons are icon+text but could use aria improvements
+- **Section 4:** No error boundaries anywhere
+- **Section 4:** `onError` on the world map image silently hides it — no fallback shown
+- **Section 9:** Zero tests exist; no test runner configured (Vitest not installed)
+
+### Rules reminder for whoever picks this up
+- DO NOT change any className, Tailwind classes, or inline styles
+- DO NOT change any component's visual output or layout  
+- After each section: update this file, append to fixes.md, `git add . && git commit && git push`
+- Wait for user confirmation before starting each new section
