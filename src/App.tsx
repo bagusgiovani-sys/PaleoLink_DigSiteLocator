@@ -1,9 +1,464 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MapPin, Users, Wrench, Gem, X, Cloud, CloudRain, CloudSnow, Sun, Wind, AlertTriangle, Camera, Satellite, Box, Map, FlaskConical, ShoppingCart, User, DollarSign, TrendingUp, Navigation, Radio, Zap, Droplets, Thermometer, Building2, GraduationCap, Truck, CheckCircle, Clock, Phone } from 'lucide-react';
+import { MapPin, Users, Wrench, Gem, X, Cloud, CloudRain, CloudSnow, Sun, Wind, AlertTriangle, Camera, Satellite, Box, Map, FlaskConical, ShoppingCart, User, Navigation, CheckCircle, Clock, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { WeatherCondition, SiteType, WeatherSeverity, MainTab, SafetyProfile, DigSite, Scientist, MarketItem } from './types';
 import ImageWithFallback from './components/shared/ImageWithFallback';
+import { resourceMap, sourceTypeIcon } from './features/pathfinder/constants';
+
+const scientists: Scientist[] = [
+  {
+    id: 1,
+    name: "EMRE BRAY",
+    title: "Logistics",
+    photo: "/assets/scientist1",
+    logistics: { current: 1, max: 4 },
+    genetics: { current: 2, max: 5 },
+    welfare: { current: 1, max: 5 },
+    trait: "Motivated",
+    traitDescription: "Increases Unrest limit by 4",
+    bio: "Raised in the city, Emre Bray often visited the local natural history museum. Her interest in scientific development led her to a career in palaeontology.",
+    salary: 1500,
+    trainingLevel: 1
+  },
+  {
+    id: 2,
+    name: "PATRICK CROWTHER",
+    title: "Logistics",
+    photo: "/assets/scientist2",
+    logistics: { current: 1, max: 5 },
+    genetics: { current: 2, max: 3 },
+    welfare: { current: 2, max: 5 },
+    trait: "Cheaper Research",
+    traitDescription: "Reduces the cost of Research tasks by 30%",
+    bio: "Patrick took a Maths degree before focusing on his love of dinosaurs. Patrick formed a palaeontology club for fellow dinosaur fans at school.",
+    salary: 1700,
+    trainingLevel: 1
+  },
+  {
+    id: 3,
+    name: "HYEJIN SEO",
+    title: "Logistics",
+    photo: "/assets/scientist3",
+    logistics: { current: 1, max: 5 },
+    genetics: { current: 1, max: 3 },
+    welfare: { current: 4, max: 9 },
+    trait: "Welfare Specialist",
+    traitDescription: "Increases Welfare Potential by 5 and Welfare Skill by 3",
+    bio: "HyeJin Seo was born in a coastal town famous for dinosaur discoveries. She completed a degree in English Literature from Jadavpur University in India.",
+    salary: 1000,
+    trainingLevel: 1
+  },
+  {
+    id: 4,
+    name: "ANEEGA SAFAR",
+    title: "Logistics",
+    photo: "/assets/scientist4",
+    logistics: { current: 2, max: 8 },
+    genetics: { current: 1, max: 3 },
+    welfare: { current: 0, max: 4 },
+    trait: "Altruistic Salary",
+    traitDescription: "Reduces the salary by 50%",
+    bio: "Aneega Safar loved dinosaurs as a child and visited local dig sites to learn more. Aneega's intelligence and drive have led to two successive promotions.",
+    salary: 1000,
+    trainingLevel: 1
+  }
+];
+
+const marketItems: MarketItem[] = [
+  {
+    id: 1,
+    name: "DIMORPHODON",
+    category: "FLYING DINOSAURS",
+    image: "/assets/dino1.jpg",
+    amount: 5,
+    appeal: 1350,
+    price: 207392,
+    priceStatus: "Good price",
+    seller: "DARK_JURASSIC_ANON344",
+    rating: 16
+  },
+  {
+    id: 2,
+    name: "PTERANODON",
+    category: "FLYING DINOSAURS",
+    image: "/assets/dino2.jpg",
+    amount: 2,
+    appeal: 5292,
+    price: 1328099,
+    priceStatus: "Fair price",
+    seller: "FOSSIL_TRADER_89",
+    rating: 58
+  },
+  {
+    id: 3,
+    name: "QUETZALCOATLUS",
+    category: "FLYING DINOSAURS",
+    image: "/assets/dino3.jpg",
+    amount: 2,
+    appeal: 35424,
+    price: 8603527,
+    priceStatus: "Good price",
+    seller: "PALEO_KING_123",
+    rating: 95
+  },
+  {
+    id: 4,
+    name: "THANATOSDRAKON",
+    category: "FLYING DINOSAURS",
+    image: "/assets/dino4.jpg",
+    amount: 2,
+    appeal: 5328,
+    price: 1139788,
+    priceStatus: "Premium",
+    seller: "DINO_DEALER_PRO",
+    rating: 92
+  }
+];
+
+const calculateSafetyRisk = (profile: SafetyProfile) => {
+  let score = 0;
+
+  if (profile.groundType === 'Sand') score += 2;
+  else if (profile.groundType === 'Clay') score += 1;
+  else if (profile.groundType === 'Limestone') score += 1;
+
+  if (profile.excavationDepth === 'Deep (2m+)') score += 3;
+  else if (profile.excavationDepth === 'Medium (1-2m)') score += 2;
+
+  if (profile.landSlope === 'Steep slope') score += 2;
+  else if (profile.landSlope === 'Slight slope') score += 1;
+
+  if (profile.waterRisk === 'High water accumulation') score += 2;
+  else if (profile.waterRisk === 'Moderate drainage risk') score += 1;
+
+  if (profile.collapseHistory === 'Major collapse before') score += 3;
+  else if (profile.collapseHistory === 'Minor collapse before') score += 2;
+
+  if (score <= 3) return { level: 'Low Risk', color: 'bg-green-500', textColor: 'text-green-400', borderColor: 'border-green-500' };
+  if (score <= 6) return { level: 'Medium Risk', color: 'bg-yellow-500', textColor: 'text-yellow-400', borderColor: 'border-yellow-500' };
+  return { level: 'High Risk', color: 'bg-red-500', textColor: 'text-red-400', borderColor: 'border-red-500' };
+};
+
+const digSites: DigSite[] = [
+  {
+    id: 1,
+    name: "Morrison Formation",
+    location: "Colorado, USA",
+    type: "fossil",
+    coordinates: { x: 25, y: 35 },
+    discoveries: ["Stegosaurus", "Allosaurus", "Brachiosaurus"],
+    team: "Team Alpha - 6 members",
+    tools: ["Ground Penetrating Radar", "Excavation Tools", "Preservation Kit"],
+    status: "Active",
+    weather: {
+      condition: "thunderstorm",
+      temperature: 68,
+      severity: "catastrophic",
+      alert: true,
+      alertMessage: "Severe thunderstorm warning - Document all findings immediately"
+    },
+    has3DModel: true,
+    modelPath: "/assets/model1",
+    modelDescription: "Complete Stegosaurus skeleton - 95% intact",
+    safetyProfile: {
+      groundType: 'Rocky',
+      excavationDepth: 'Medium (1-2m)',
+      landSlope: 'Slight slope',
+      waterRisk: 'Low drainage risk',
+      collapseHistory: 'No'
+    }
+  },
+  {
+    id: 2,
+    name: "Hell Creek Formation",
+    location: "Montana, USA",
+    type: "fossil",
+    coordinates: { x: 30, y: 25 },
+    discoveries: ["Tyrannosaurus Rex", "Triceratops", "Ankylosaurus"],
+    team: "Team Bravo - 8 members",
+    tools: ["3D Scanner", "Heavy Machinery", "Chemical Analysis Kit"],
+    status: "Active",
+    weather: {
+      condition: "sunny",
+      temperature: 75,
+      severity: "good",
+      alert: false,
+      alertMessage: ""
+    },
+    has3DModel: true,
+    modelPath: "/assets/model2",
+    modelDescription: "T-Rex skull fragment - Excellent preservation",
+    safetyProfile: {
+      groundType: 'Clay',
+      excavationDepth: 'Deep (2m+)',
+      landSlope: 'Flat',
+      waterRisk: 'Moderate drainage risk',
+      collapseHistory: 'Minor collapse before'
+    }
+  },
+  {
+    id: 3,
+    name: "Giza Pyramid Complex",
+    location: "Cairo, Egypt",
+    type: "archaeological",
+    coordinates: { x: 55, y: 30 },
+    discoveries: ["Ancient chambers", "Hieroglyphics", "Burial artifacts"],
+    team: "Team Delta - 5 members",
+    tools: ["Fine Brushes", "Microscope", "Digital Mapping"],
+    status: "Planning",
+    weather: {
+      condition: "sunny",
+      temperature: 95,
+      severity: "warning",
+      alert: true,
+      alertMessage: "Extreme heat advisory - Satellite imagery scheduled"
+    },
+    has3DModel: false,
+    modelPath: "",
+    modelDescription: "3D scan pending - Site documentation in progress",
+    safetyProfile: {
+      groundType: 'Limestone',
+      excavationDepth: 'Shallow (0-1m)',
+      landSlope: 'Flat',
+      waterRisk: 'Low drainage risk',
+      collapseHistory: 'No'
+    }
+  },
+  {
+    id: 4,
+    name: "Gobi Desert",
+    location: "Mongolia",
+    type: "fossil",
+    coordinates: { x: 70, y: 40 },
+    discoveries: ["Velociraptor", "Protoceratops", "Oviraptor"],
+    team: "Team Gamma - 7 members",
+    tools: ["Drone Survey", "GPS Markers", "Climate Control"],
+    status: "Active",
+    weather: {
+      condition: "typhoon",
+      temperature: 62,
+      severity: "catastrophic",
+      alert: true,
+      alertMessage: "Typhoon approaching - Emergency documentation protocol activated"
+    },
+    has3DModel: true,
+    modelPath: "/assets/model3",
+    modelDescription: "Velociraptor nest with eggs - Rare find",
+    safetyProfile: {
+      groundType: 'Sand',
+      excavationDepth: 'Deep (2m+)',
+      landSlope: 'Steep slope',
+      waterRisk: 'High water accumulation',
+      collapseHistory: 'Major collapse before'
+    }
+  },
+  {
+    id: 5,
+    name: "Machu Picchu",
+    location: "Peru",
+    type: "archaeological",
+    coordinates: { x: 35, y: 75 },
+    discoveries: ["Inca structures", "Ceremonial artifacts", "Agricultural terraces"],
+    team: "Team Epsilon - 9 members",
+    tools: ["Seismic Sensors", "Heavy Excavators", "Airlifting Equipment"],
+    status: "Active",
+    weather: {
+      condition: "rainy",
+      temperature: 58,
+      severity: "warning",
+      alert: true,
+      alertMessage: "Heavy rainfall expected - Secure all documentation"
+    },
+    has3DModel: true,
+    modelPath: "/assets/model4",
+    modelDescription: "Complete temple structure scan - High resolution",
+    safetyProfile: {
+      groundType: 'Rocky',
+      excavationDepth: 'Shallow (0-1m)',
+      landSlope: 'Steep slope',
+      waterRisk: 'Moderate drainage risk',
+      collapseHistory: 'No'
+    }
+  },
+  {
+    id: 6,
+    name: "Patagonia Formation",
+    location: "Argentina",
+    type: "fossil",
+    coordinates: { x: 32, y: 80 },
+    discoveries: ["Argentinosaurus", "Giganotosaurus", "Marine fossils"],
+    team: "Team Zeta - 6 members",
+    tools: ["Ground Radar", "Marine Equipment", "Preservation Kit"],
+    status: "Active",
+    weather: {
+      condition: "flood",
+      temperature: 54,
+      severity: "catastrophic",
+      alert: true,
+      alertMessage: "Flood warning - Evacuate and secure all specimens"
+    },
+    has3DModel: false,
+    modelPath: "",
+    modelDescription: "3D scan missing - Requires immediate documentation",
+    safetyProfile: {
+      groundType: 'Clay',
+      excavationDepth: 'Medium (1-2m)',
+      landSlope: 'Slight slope',
+      waterRisk: 'High water accumulation',
+      collapseHistory: 'Minor collapse before'
+    }
+  }
+];
+
+const getWeatherColor = (severity: WeatherSeverity) => {
+  switch (severity) {
+    case 'good': return 'bg-green-400';
+    case 'warning': return 'bg-yellow-400';
+    case 'catastrophic': return 'bg-red-500';
+  }
+};
+
+const getWeatherIcon = (condition: WeatherCondition) => {
+  switch (condition) {
+    case 'sunny': return <Sun className="w-4 h-4" />;
+    case 'rainy': return <CloudRain className="w-4 h-4" />;
+    case 'thunderstorm': return <CloudSnow className="w-4 h-4" />;
+    case 'flood': return <Cloud className="w-4 h-4" />;
+    case 'typhoon': return <Wind className="w-4 h-4" />;
+  }
+};
+
+const getSiteIcon = (type: SiteType, status: string) => {
+  if (status === 'Planning') {
+    return <Wrench className="w-5 h-5 text-slate-900" />;
+  }
+  return type === 'fossil' ? <Gem className="w-5 h-5 text-slate-900" /> : <Box className="w-5 h-5 text-slate-900" />;
+};
+
+const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
+  switch (condition) {
+    case 'rainy':
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
+              initial={{ y: -20, x: Math.random() * 100 }}
+              animate={{ y: 120, x: Math.random() * 100 }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+                ease: "linear"
+              }}
+            />
+          ))}
+        </div>
+      );
+
+    case 'thunderstorm':
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
+              initial={{ y: -20, x: Math.random() * 100 }}
+              animate={{ y: 120, x: Math.random() * 100 }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+                ease: "linear"
+              }}
+            />
+          ))}
+          <motion.div
+            className="absolute inset-0 bg-yellow-300 opacity-30"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.5, 0] }}
+            transition={{
+              duration: 0.2,
+              repeat: Infinity,
+              repeatDelay: Math.random() * 3 + 2
+            }}
+          />
+        </div>
+      );
+
+    case 'flood':
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 bg-blue-500 opacity-40"
+            initial={{ height: '0%' }}
+            animate={{ height: ['0%', '30%', '0%'] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        </div>
+      );
+
+    case 'sunny':
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-8 bg-yellow-400 opacity-40"
+                style={{
+                  transform: `rotate(${i * 45}deg) translateY(-20px)`,
+                  transformOrigin: 'center'
+                }}
+                animate={{ opacity: [0.2, 0.6, 0.2] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.2
+                }}
+              />
+            ))}
+          </motion.div>
+        </div>
+      );
+
+    case 'typhoon':
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <motion.div
+            className="absolute inset-0"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          >
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-0.5 h-6 bg-gray-400 opacity-60"
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  transform: `rotate(${i * 30}deg) translateX(${20 + i * 3}px)`
+                }}
+              />
+            ))}
+          </motion.div>
+        </div>
+      );
+
+    default:
+      return null;
+  }
+};
 
 const DigSiteLocator = () => {
   const [selectedSite, setSelectedSite] = useState<DigSite | null>(null);
@@ -13,460 +468,6 @@ const DigSiteLocator = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [showModel, setShowModel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
-
-  const scientists: Scientist[] = [
-    {
-      id: 1,
-      name: "EMRE BRAY",
-      title: "Logistics",
-      photo: "/assets/scientist1",
-      logistics: { current: 1, max: 4 },
-      genetics: { current: 2, max: 5 },
-      welfare: { current: 1, max: 5 },
-      trait: "Motivated",
-      traitDescription: "Increases Unrest limit by 4",
-      bio: "Raised in the city, Emre Bray often visited the local natural history museum. Her interest in scientific development led her to a career in palaeontology.",
-      salary: 1500,
-      trainingLevel: 1
-    },
-    {
-      id: 2,
-      name: "PATRICK CROWTHER",
-      title: "Logistics",
-      photo: "/assets/scientist2",
-      logistics: { current: 1, max: 5 },
-      genetics: { current: 2, max: 3 },
-      welfare: { current: 2, max: 5 },
-      trait: "Cheaper Research",
-      traitDescription: "Reduces the cost of Research tasks by 30%",
-      bio: "Patrick took a Maths degree before focusing on his love of dinosaurs. Patrick formed a palaeontology club for fellow dinosaur fans at school.",
-      salary: 1700,
-      trainingLevel: 1
-    },
-    {
-      id: 3,
-      name: "HYEJIN SEO",
-      title: "Logistics",
-      photo: "/assets/scientist3",
-      logistics: { current: 1, max: 5 },
-      genetics: { current: 1, max: 3 },
-      welfare: { current: 4, max: 9 },
-      trait: "Welfare Specialist",
-      traitDescription: "Increases Welfare Potential by 5 and Welfare Skill by 3",
-      bio: "HyeJin Seo was born in a coastal town famous for dinosaur discoveries. She completed a degree in English Literature from Jadavpur University in India.",
-      salary: 1000,
-      trainingLevel: 1
-    },
-    {
-      id: 4,
-      name: "ANEEGA SAFAR",
-      title: "Logistics",
-      photo: "/assets/scientist4",
-      logistics: { current: 2, max: 8 },
-      genetics: { current: 1, max: 3 },
-      welfare: { current: 0, max: 4 },
-      trait: "Altruistic Salary",
-      traitDescription: "Reduces the salary by 50%",
-      bio: "Aneega Safar loved dinosaurs as a child and visited local dig sites to learn more. Aneega's intelligence and drive have led to two successive promotions.",
-      salary: 1000,
-      trainingLevel: 1
-    }
-  ];
-
-  const marketItems: MarketItem[] = [
-    {
-      id: 1,
-      name: "DIMORPHODON",
-      category: "FLYING DINOSAURS",
-      image: "/assets/dino1.jpg",
-      amount: 5,
-      appeal: 1350,
-      price: 207392,
-      priceStatus: "Good price",
-      seller: "DARK_JURASSIC_ANON344",
-      rating: 16
-    },
-    {
-      id: 2,
-      name: "PTERANODON",
-      category: "FLYING DINOSAURS",
-      image: "/assets/dino2.jpg",
-      amount: 2,
-      appeal: 5292,
-      price: 1328099,
-      priceStatus: "Fair price",
-      seller: "FOSSIL_TRADER_89",
-      rating: 58
-    },
-    {
-      id: 3,
-      name: "QUETZALCOATLUS",
-      category: "FLYING DINOSAURS",
-      image: "/assets/dino3.jpg",
-      amount: 2,
-      appeal: 35424,
-      price: 8603527,
-      priceStatus: "Good price",
-      seller: "PALEO_KING_123",
-      rating: 95
-    },
-    {
-      id: 4,
-      name: "THANATOSDRAKON",
-      category: "FLYING DINOSAURS",
-      image: "/assets/dino4.jpg",
-      amount: 2,
-      appeal: 5328,
-      price: 1139788,
-      priceStatus: "Premium",
-      seller: "DINO_DEALER_PRO",
-      rating: 92
-    }
-  ];
-
-  const calculateSafetyRisk = (profile: SafetyProfile) => {
-    let score = 0;
-
-    if (profile.groundType === 'Sand') score += 2;
-    else if (profile.groundType === 'Clay') score += 1;
-    else if (profile.groundType === 'Limestone') score += 1;
-
-    if (profile.excavationDepth === 'Deep (2m+)') score += 3;
-    else if (profile.excavationDepth === 'Medium (1-2m)') score += 2;
-
-    if (profile.landSlope === 'Steep slope') score += 2;
-    else if (profile.landSlope === 'Slight slope') score += 1;
-
-    if (profile.waterRisk === 'High water accumulation') score += 2;
-    else if (profile.waterRisk === 'Moderate drainage risk') score += 1;
-
-    if (profile.collapseHistory === 'Major collapse before') score += 3;
-    else if (profile.collapseHistory === 'Minor collapse before') score += 2;
-
-    if (score <= 3) return { level: 'Low Risk', color: 'bg-green-500', textColor: 'text-green-400', borderColor: 'border-green-500' };
-    if (score <= 6) return { level: 'Medium Risk', color: 'bg-yellow-500', textColor: 'text-yellow-400', borderColor: 'border-yellow-500' };
-    return { level: 'High Risk', color: 'bg-red-500', textColor: 'text-red-400', borderColor: 'border-red-500' };
-  };
-
-  const digSites: DigSite[] = [
-    {
-      id: 1,
-      name: "Morrison Formation",
-      location: "Colorado, USA",
-      type: "fossil",
-      coordinates: { x: 25, y: 35 },
-      discoveries: ["Stegosaurus", "Allosaurus", "Brachiosaurus"],
-      team: "Team Alpha - 6 members",
-      tools: ["Ground Penetrating Radar", "Excavation Tools", "Preservation Kit"],
-      status: "Active",
-      weather: {
-        condition: "thunderstorm",
-        temperature: 68,
-        severity: "catastrophic",
-        alert: true,
-        alertMessage: "Severe thunderstorm warning - Document all findings immediately"
-      },
-      has3DModel: true,
-      modelPath: "/assets/model1",
-      modelDescription: "Complete Stegosaurus skeleton - 95% intact",
-      safetyProfile: {
-        groundType: 'Rocky',
-        excavationDepth: 'Medium (1-2m)',
-        landSlope: 'Slight slope',
-        waterRisk: 'Low drainage risk',
-        collapseHistory: 'No'
-      }
-    },
-    {
-      id: 2,
-      name: "Hell Creek Formation",
-      location: "Montana, USA",
-      type: "fossil",
-      coordinates: { x: 30, y: 25 },
-      discoveries: ["Tyrannosaurus Rex", "Triceratops", "Ankylosaurus"],
-      team: "Team Bravo - 8 members",
-      tools: ["3D Scanner", "Heavy Machinery", "Chemical Analysis Kit"],
-      status: "Active",
-      weather: {
-        condition: "sunny",
-        temperature: 75,
-        severity: "good",
-        alert: false,
-        alertMessage: ""
-      },
-      has3DModel: true,
-      modelPath: "/assets/model2",
-      modelDescription: "T-Rex skull fragment - Excellent preservation",
-      safetyProfile: {
-        groundType: 'Clay',
-        excavationDepth: 'Deep (2m+)',
-        landSlope: 'Flat',
-        waterRisk: 'Moderate drainage risk',
-        collapseHistory: 'Minor collapse before'
-      }
-    },
-    {
-      id: 3,
-      name: "Giza Pyramid Complex",
-      location: "Cairo, Egypt",
-      type: "archaeological",
-      coordinates: { x: 55, y: 30 },
-      discoveries: ["Ancient chambers", "Hieroglyphics", "Burial artifacts"],
-      team: "Team Delta - 5 members",
-      tools: ["Fine Brushes", "Microscope", "Digital Mapping"],
-      status: "Planning",
-      weather: {
-        condition: "sunny",
-        temperature: 95,
-        severity: "warning",
-        alert: true,
-        alertMessage: "Extreme heat advisory - Satellite imagery scheduled"
-      },
-      has3DModel: false,
-      modelPath: "",
-      modelDescription: "3D scan pending - Site documentation in progress",
-      safetyProfile: {
-        groundType: 'Limestone',
-        excavationDepth: 'Shallow (0-1m)',
-        landSlope: 'Flat',
-        waterRisk: 'Low drainage risk',
-        collapseHistory: 'No'
-      }
-    },
-    {
-      id: 4,
-      name: "Gobi Desert",
-      location: "Mongolia",
-      type: "fossil",
-      coordinates: { x: 70, y: 40 },
-      discoveries: ["Velociraptor", "Protoceratops", "Oviraptor"],
-      team: "Team Gamma - 7 members",
-      tools: ["Drone Survey", "GPS Markers", "Climate Control"],
-      status: "Active",
-      weather: {
-        condition: "typhoon",
-        temperature: 62,
-        severity: "catastrophic",
-        alert: true,
-        alertMessage: "Typhoon approaching - Emergency documentation protocol activated"
-      },
-      has3DModel: true,
-      modelPath: "/assets/model3",
-      modelDescription: "Velociraptor nest with eggs - Rare find",
-      safetyProfile: {
-        groundType: 'Sand',
-        excavationDepth: 'Deep (2m+)',
-        landSlope: 'Steep slope',
-        waterRisk: 'High water accumulation',
-        collapseHistory: 'Major collapse before'
-      }
-    },
-    {
-      id: 5,
-      name: "Machu Picchu",
-      location: "Peru",
-      type: "archaeological",
-      coordinates: { x: 35, y: 75 },
-      discoveries: ["Inca structures", "Ceremonial artifacts", "Agricultural terraces"],
-      team: "Team Epsilon - 9 members",
-      tools: ["Seismic Sensors", "Heavy Excavators", "Airlifting Equipment"],
-      status: "Active",
-      weather: {
-        condition: "rainy",
-        temperature: 58,
-        severity: "warning",
-        alert: true,
-        alertMessage: "Heavy rainfall expected - Secure all documentation"
-      },
-      has3DModel: true,
-      modelPath: "/assets/model4",
-      modelDescription: "Complete temple structure scan - High resolution",
-      safetyProfile: {
-        groundType: 'Rocky',
-        excavationDepth: 'Shallow (0-1m)',
-        landSlope: 'Steep slope',
-        waterRisk: 'Moderate drainage risk',
-        collapseHistory: 'No'
-      }
-    },
-    {
-      id: 6,
-      name: "Patagonia Formation",
-      location: "Argentina",
-      type: "fossil",
-      coordinates: { x: 32, y: 80 },
-      discoveries: ["Argentinosaurus", "Giganotosaurus", "Marine fossils"],
-      team: "Team Zeta - 6 members",
-      tools: ["Ground Radar", "Marine Equipment", "Preservation Kit"],
-      status: "Active",
-      weather: {
-        condition: "flood",
-        temperature: 54,
-        severity: "catastrophic",
-        alert: true,
-        alertMessage: "Flood warning - Evacuate and secure all specimens"
-      },
-      has3DModel: false,
-      modelPath: "",
-      modelDescription: "3D scan missing - Requires immediate documentation",
-      safetyProfile: {
-        groundType: 'Clay',
-        excavationDepth: 'Medium (1-2m)',
-        landSlope: 'Slight slope',
-        waterRisk: 'High water accumulation',
-        collapseHistory: 'Minor collapse before'
-      }
-    }
-  ];
-
-  const getWeatherColor = (severity: WeatherSeverity) => {
-    switch (severity) {
-      case 'good': return 'bg-green-400';
-      case 'warning': return 'bg-yellow-400';
-      case 'catastrophic': return 'bg-red-500';
-    }
-  };
-
-  const getWeatherIcon = (condition: WeatherCondition) => {
-    switch (condition) {
-      case 'sunny': return <Sun className="w-4 h-4" />;
-      case 'rainy': return <CloudRain className="w-4 h-4" />;
-      case 'thunderstorm': return <CloudSnow className="w-4 h-4" />;
-      case 'flood': return <Cloud className="w-4 h-4" />;
-      case 'typhoon': return <Wind className="w-4 h-4" />;
-    }
-  };
-
-  const getSiteIcon = (type: SiteType, status: string) => {
-    if (status === 'Planning') {
-      return <Wrench className="w-5 h-5 text-slate-900" />;
-    }
-    return type === 'fossil' ? <Gem className="w-5 h-5 text-slate-900" /> : <Box className="w-5 h-5 text-slate-900" />;
-  };
-
-  const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
-    switch (condition) {
-      case 'rainy':
-        return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
-                initial={{ y: -20, x: Math.random() * 100 }}
-                animate={{ y: 120, x: Math.random() * 100 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                  ease: "linear"
-                }}
-              />
-            ))}
-          </div>
-        );
-
-      case 'thunderstorm':
-        return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {[...Array(15)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
-                initial={{ y: -20, x: Math.random() * 100 }}
-                animate={{ y: 120, x: Math.random() * 100 }}
-                transition={{
-                  duration: 0.8,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                  ease: "linear"
-                }}
-              />
-            ))}
-            <motion.div
-              className="absolute inset-0 bg-yellow-300 opacity-30"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.5, 0] }}
-              transition={{
-                duration: 0.2,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 3 + 2
-              }}
-            />
-          </div>
-        );
-
-      case 'flood':
-        return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <motion.div
-              className="absolute bottom-0 left-0 right-0 bg-blue-500 opacity-40"
-              initial={{ height: '0%' }}
-              animate={{ height: ['0%', '30%', '0%'] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          </div>
-        );
-
-      case 'sunny':
-        return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              {[...Array(8)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-8 bg-yellow-400 opacity-40"
-                  style={{
-                    transform: `rotate(${i * 45}deg) translateY(-20px)`,
-                    transformOrigin: 'center'
-                  }}
-                  animate={{ opacity: [0.2, 0.6, 0.2] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.2
-                  }}
-                />
-              ))}
-            </motion.div>
-          </div>
-        );
-
-      case 'typhoon':
-        return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <motion.div
-              className="absolute inset-0"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            >
-              {[...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-0.5 h-6 bg-gray-400 opacity-60"
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: `rotate(${i * 30}deg) translateX(${20 + i * 3}px)`
-                  }}
-                />
-              ))}
-            </motion.div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
 
   useEffect(() => {
     if (selectedSite) {
@@ -579,35 +580,6 @@ const DigSiteLocator = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-3 md:p-6">
-      <style>{`
-        @keyframes slideInFromLeft {
-          from { opacity: 0; transform: translateX(-30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInFromBottom {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.5); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes glowPulse {
-          0%, 100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
-          50% { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); }
-        }
-        .animate-slide-left { animation: slideInFromLeft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .animate-slide-bottom { animation: slideInFromBottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
-        .item-hidden { opacity: 0; }
-
-        /* Map container heights — mobile: 460px (~15% up from 400px), desktop: 690px (~15% up from 600px) */
-        .map-container { height: 860px; min-height: 840px; }
-        .map-mobile-spacer { height: 460px; }
-        .map-desktop-spacer { height: 890px; }
-      `}</style>
-
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 md:mb-8 text-center">
@@ -1281,57 +1253,7 @@ const DigSiteLocator = () => {
                 {/* Per-site resource cards */}
                 <div className="space-y-4">
                   {digSites.filter(s => s.weather.alert).map((site) => {
-
-                    const resourceMap: Record<string, { tools: { name: string; source: string; sourceType: string; distance: string; eta: string; available: boolean; icon: any }[] }> = {
-                      flood: {
-                        tools: [
-                          { name: "LiDAR Ground Scanner", source: "MIT Geosciences Dept.", sourceType: "University", distance: "12 km", eta: "45 min", available: true, icon: Radio },
-                          { name: "Waterproof Excavation Kit", source: "NatGeo Field Depot", sourceType: "Depot", distance: "8 km", eta: "30 min", available: true, icon: Wrench },
-                          { name: "Emergency Pump System", source: "State Civil Defense", sourceType: "Government", distance: "22 km", eta: "1h 10min", available: false, icon: Droplets },
-                          { name: "Mobile Data Unit", source: "Stanford Paleo Lab", sourceType: "University", distance: "35 km", eta: "1h 45min", available: true, icon: Box },
-                        ]
-                      },
-                      typhoon: {
-                        tools: [
-                          { name: "Wind-Resistant Shelter Kit", source: "Army Corps of Engineers", sourceType: "Government", distance: "18 km", eta: "55 min", available: true, icon: Zap },
-                          { name: "Satellite Uplink Terminal", source: "Tokyo University Lab", sourceType: "University", distance: "41 km", eta: "2h 05min", available: true, icon: Satellite },
-                          { name: "Rapid Specimen Container", source: "Fossil Shield Co.", sourceType: "Supplier", distance: "9 km", eta: "35 min", available: true, icon: Box },
-                          { name: "Emergency Drone Fleet", source: "AeroPaleo Systems", sourceType: "Supplier", distance: "27 km", eta: "1h 20min", available: false, icon: Camera },
-                        ]
-                      },
-                      thunderstorm: {
-                        tools: [
-                          { name: "Faraday-Shielded Storage", source: "Harvard Earth Sciences", sourceType: "University", distance: "6 km", eta: "20 min", available: true, icon: Zap },
-                          { name: "Grounding Rod Set", source: "Field Safety Supplies", sourceType: "Supplier", distance: "4 km", eta: "15 min", available: true, icon: Wrench },
-                          { name: "Portable Weather Station", source: "NOAA Field Office", sourceType: "Government", distance: "14 km", eta: "50 min", available: true, icon: Thermometer },
-                          { name: "Rapid Resin Kit", source: "PaleoTech Depot", sourceType: "Depot", distance: "19 km", eta: "1h 05min", available: false, icon: Box },
-                        ]
-                      },
-                      rainy: {
-                        tools: [
-                          { name: "Waterproof Tarps & Frames", source: "FieldCraft Supply Co.", sourceType: "Supplier", distance: "5 km", eta: "18 min", available: true, icon: Droplets },
-                          { name: "Drainage Pump Set", source: "Lima Civil Rescue", sourceType: "Government", distance: "11 km", eta: "40 min", available: true, icon: Droplets },
-                          { name: "Ground Moisture Sensors", source: "UC Berkeley GeoLab", sourceType: "University", distance: "28 km", eta: "1h 30min", available: true, icon: Radio },
-                          { name: "Preservation Resin Kit", source: "Fossil Care Intl.", sourceType: "Supplier", distance: "16 km", eta: "55 min", available: false, icon: Box },
-                        ]
-                      },
-                      sunny: {
-                        tools: [
-                          { name: "UV Protection Canopies", source: "Desert Field Depot", sourceType: "Depot", distance: "3 km", eta: "10 min", available: true, icon: Thermometer },
-                          { name: "Hydration Supply Unit", source: "Red Cross Station A", sourceType: "Government", distance: "7 km", eta: "25 min", available: true, icon: Droplets },
-                          { name: "Heat-Resistant Sample Bags", source: "Cairo Uni. Sciences", sourceType: "University", distance: "15 km", eta: "50 min", available: true, icon: Box },
-                          { name: "Portable Cooling System", source: "ClimaTech Rentals", sourceType: "Supplier", distance: "24 km", eta: "1h 20min", available: false, icon: Zap },
-                        ]
-                      },
-                    };
-
                     const resources = resourceMap[site.weather.condition]?.tools ?? [];
-                    const sourceTypeIcon = (type: string) => {
-                      if (type === 'University') return <GraduationCap className="w-3 h-3" />;
-                      if (type === 'Government') return <Building2 className="w-3 h-3" />;
-                      if (type === 'Supplier') return <Truck className="w-3 h-3" />;
-                      return <Box className="w-3 h-3" />;
-                    };
 
                     return (
                       <div key={site.id} className={`rounded-lg border overflow-hidden ${site.weather.severity === 'catastrophic'

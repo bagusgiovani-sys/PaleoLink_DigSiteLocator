@@ -10,6 +10,89 @@ Entries are appended in order — nothing is ever overwritten.
 
 ---
 
+## [2026-05-08] Ultra-Instinct Session 1 — Performance & Dead Code Pass
+
+---
+
+### Fix UI-1 — Move static data arrays to module level
+**Type:** PERF
+**File(s) changed:**
+- `src/App.tsx` — `scientists`, `marketItems`, `digSites` moved from inside `DigSiteLocator` to module-level constants
+
+**Before:** All three arrays declared inside the component body — new array objects allocated on every render.
+**After:** Declared once at module level; component reads stable references.
+**Linked step:** progress.md > Milestone 1 > item 1
+
+---
+
+### Fix UI-2 — Move WeatherAnimation to module level (fixes React identity bug)
+**Type:** PERF
+**File(s) changed:**
+- `src/App.tsx` — `WeatherAnimation` moved from inside `DigSiteLocator` to module level
+
+**Before:** Inner component definition caused React to treat it as a new component type on every parent render, unmounting and remounting all 6 weather animation instances.
+**After:** Stable component identity; animations persist across parent re-renders.
+**Linked step:** progress.md > Milestone 1 > item 2
+
+---
+
+### Fix UI-3 — Move pure helper functions to module level
+**Type:** PERF
+**File(s) changed:**
+- `src/App.tsx` — `calculateSafetyRisk`, `getWeatherColor`, `getWeatherIcon`, `getSiteIcon` moved from inside `DigSiteLocator` to module level
+
+**Before:** Four pure functions re-created as new function objects on every render.
+**After:** Stable function references defined once at module scope.
+**Linked step:** progress.md > Milestone 1 > item 3
+
+---
+
+### Fix UI-4 — Extract resourceMap and sourceTypeIcon to pathfinder constants
+**Type:** PERF + ARCH
+**File(s) changed:**
+- `src/features/pathfinder/constants.tsx` (created) — exports `resourceMap` and `sourceTypeIcon`
+- `src/App.tsx` — imports from constants, removes inline declarations from `.map()` callback
+
+**Before:** `resourceMap` (large object, ~40 lines) redeclared inside the `.map()` callback — rebuilt for every matched site on every render. `sourceTypeIcon` also redeclared per iteration.
+**After:** Single stable module-level constants; `.map()` callback reads them by reference.
+**Linked step:** progress.md > Milestone 1 > item 4
+
+---
+
+### Fix UI-5 — Move inline CSS from JSX `<style>` block to index.css
+**Type:** QUAL
+**File(s) changed:**
+- `src/index.css` — added keyframes (slideInFromLeft, slideInFromBottom, scaleIn, glowPulse) and utility classes
+- `src/App.tsx` — removed inline `<style>{...}</style>` block from JSX return
+
+**Before:** CSS injected via a JSX `<style>` string on every render, creating a DOM `<style>` element inside the component tree.
+**After:** CSS compiled statically by Vite/PostCSS at build time.
+**Linked step:** progress.md > Milestone 2 > item 1
+
+---
+
+### Fix UI-6 — Remove unused lucide-react imports
+**Type:** DX
+**File(s) changed:**
+- `src/App.tsx` — removed `DollarSign`, `TrendingUp`, `Radio`, `Zap`, `Droplets`, `Thermometer`, `Building2`, `GraduationCap`, `Truck` from import line
+
+**Before:** 9 icon imports that were either never used (`DollarSign`, `TrendingUp`) or only used in code now extracted to the pathfinder constants file.
+**After:** Import line contains only icons actually used in App.tsx.
+**Linked step:** progress.md > Milestone 2 > item 2
+
+---
+
+### Fix UI-7 — Delete unused src/assets/react.svg
+**Type:** DX
+**File(s) changed:**
+- `src/assets/react.svg` (deleted) — Vite scaffold default, never imported
+
+**Before:** Dead file from `npm create vite` scaffold.
+**After:** Removed.
+**Linked step:** progress.md > Milestone 2 > item 3
+
+---
+
 ## Section 1 — Folder Structure & Architecture
 **Completed:** 2026-05-07
 

@@ -232,3 +232,47 @@ return <main layout>
 - DO NOT change any component's visual output or layout  
 - After each section: update this file, append to fixes.md, `git add . && git commit && git push`
 - Wait for user confirmation before starting each new section
+
+---
+
+## Ultra-Instinct Improvement Plan
+> Initiated: 2026-05-08 | Last updated: 2026-05-08
+
+## Status Legend
+- [ ] Pending
+- [~] In Progress
+- [x] Done
+
+---
+
+## Milestone 1 — Critical Fixes (Performance)
+- [x] **[PERF]** Move `scientists`, `marketItems`, `digSites` to module-level constants — `src/App.tsx:17–320` (was)
+- [x] **[PERF]** Move `WeatherAnimation` to module level (fixes React identity/remount bug) — `src/App.tsx:347–469` (was)
+- [x] **[PERF]** Move `calculateSafetyRisk`, `getWeatherColor`, `getWeatherIcon`, `getSiteIcon` to module level — `src/App.tsx:127–345` (was)
+- [x] **[PERF]** Extract `resourceMap` and `sourceTypeIcon` to `src/features/pathfinder/constants.tsx`
+
+## Milestone 2 — Major Improvements
+- [x] **[QUAL]** Move inline `<style>` JSX block to `src/index.css`
+- [x] **[DX]** Remove unused lucide-react imports (`DollarSign`, `TrendingUp` + 7 more moved to constants)
+- [x] **[DX]** Delete `src/assets/react.svg` (unused Vite default)
+- [ ] **[ARCH]** Section 2 — Split `App.tsx` into feature components (Scientists, Marketplace, Pathfinder, Expedition sub-components) — requires user confirmation
+- [ ] **[QUAL]** Add error boundaries around tab content
+- [ ] **[QUAL]** Fix hardcoded `"12"` for RESOURCES MATCHED — derive from actual data (`src/App.tsx` pathfinder section)
+- [ ] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
+
+## Milestone 3 — Quality & Polish
+- [ ] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
+- [ ] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
+- [ ] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
+- [ ] **[A11Y]** Add `aria-label` to site detail panel close button
+- [ ] **[A11Y]** Add accessible labels to site marker buttons
+- [ ] **[QUAL]** Add `onClick` handlers to "Document" and "Satellite Scan" buttons
+- [ ] **[DEP]** Upgrade `lucide-react` from `^0.263.1` to current (check for icon renames first)
+- [ ] **[QUAL]** Add `typescript` as explicit `devDependency`
+
+---
+
+## Session Log
+| Session | Date       | Token % at close | Summary                                                    |
+|---------|------------|------------------|------------------------------------------------------------|
+| 1       | 2026-05-08 | ~40%             | origin.md created; Milestone 1 complete; Milestone 2 partial (3/7 done) |
