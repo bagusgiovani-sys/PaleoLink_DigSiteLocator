@@ -15,7 +15,7 @@
 | # | Section | Status |
 |---|---------|--------|
 | 1 | Folder Structure & Architecture | COMPLETE |
-| 2 | Component Architecture | PENDING |
+| 2 | Component Architecture | COMPLETE |
 | 3 | State Management | PENDING |
 | 4 | Error Handling | PENDING |
 | 5 | Performance | PENDING |
@@ -255,7 +255,7 @@ return <main layout>
 - [x] **[QUAL]** Move inline `<style>` JSX block to `src/index.css`
 - [x] **[DX]** Remove unused lucide-react imports (`DollarSign`, `TrendingUp` + 7 more moved to constants)
 - [x] **[DX]** Delete `src/assets/react.svg` (unused Vite default)
-- [ ] **[ARCH]** Section 2 — Split `App.tsx` into feature components (Scientists, Marketplace, Pathfinder, Expedition sub-components) — requires user confirmation
+- [x] **[ARCH]** Section 2 — Split `App.tsx` into feature components — COMPLETE
 - [ ] **[QUAL]** Add error boundaries around tab content
 - [ ] **[QUAL]** Fix hardcoded `"12"` for RESOURCES MATCHED — derive from actual data (`src/App.tsx` pathfinder section)
 - [ ] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
@@ -276,3 +276,4 @@ return <main layout>
 | Session | Date       | Token % at close | Summary                                                    |
 |---------|------------|------------------|------------------------------------------------------------|
 | 1       | 2026-05-08 | ~40%             | origin.md created; Milestone 1 complete; Milestone 2 partial (3/7 done) |
+| 2       | 2026-05-08 | ~60%             | Section 2 complete — App.tsx reduced to 157 lines; 14 new files extracted |

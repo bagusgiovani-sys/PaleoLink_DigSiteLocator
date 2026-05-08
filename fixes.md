@@ -134,3 +134,57 @@ src/hooks/
 src/utils/
 ```
 **Why:** Establishing the scaffold before refactoring ensures Section 2 has a defined home for every extracted piece. Feature-based folders (by domain) scale better than type-based folders (all components together, all hooks together) because related files stay co-located.
+
+---
+
+## Section 2 — Component Architecture
+**Completed:** 2026-05-08
+
+---
+
+### Fix 2.1 — Extract expedition utility helpers
+**Files changed:** `src/features/expedition/utils/safetyHelpers.ts`, `src/features/expedition/utils/weatherHelpers.tsx`, `src/features/expedition/utils/WeatherAnimation.tsx`, `src/hooks/useIntroSplash.ts`
+**What was wrong:** `calculateSafetyRisk`, `getWeatherColor`, `getWeatherIcon`, `getSiteIcon`, and `WeatherAnimation` were at module level in `App.tsx`. `showIntro` timer logic was duplicated inside the component.
+**What was fixed:** Moved each to its correct feature utils/hooks home with proper `import type` for types.
+
+---
+
+### Fix 2.2 — Extract data constants
+**Files changed:** `src/constants/digSites.ts`, `src/features/scientists/constants.ts`, `src/features/marketplace/constants.ts`
+**What was wrong:** Static data arrays (`digSites`, `scientists`, `marketItems`) lived at module level in `App.tsx` — mixing data and orchestration.
+**What was fixed:** Each array extracted to its feature's constants file with `import type`.
+
+---
+
+### Fix 2.3 — Extract IntroSplash, ScientistCard, MarketItemRow, StatsFooter
+**Files changed:** `src/components/shared/IntroSplash.tsx`, `src/features/scientists/components/ScientistCard.tsx`, `src/features/marketplace/components/MarketItemRow.tsx`, `src/features/expedition/components/StatsFooter.tsx`
+**What was wrong:** Four independent, reusable UI units were inlined in `App.tsx`.
+**What was fixed:** Each extracted to its domain folder with typed props.
+
+---
+
+### Fix 2.4 — Extract SiteDetailPanel
+**Files changed:** `src/features/expedition/components/SiteDetailPanel.tsx`
+**What was wrong:** The site detail panel (portal, animation, 3 tabs, safety/3D/details content) was 300+ lines inlined inside a `.map()` in `App.tsx`. Panel state (`animatingItems`, `activeTab`, `showModel`, `panelRef`) all lived in the parent.
+**What was fixed:** Extracted to `SiteDetailPanel` with props `{ site, onClose }`. Component now owns its own ref, state, and opening animation `useEffect`. Close handler animates out then calls `onClose()`. `createPortal` is internal.
+
+---
+
+### Fix 2.5 — Extract SiteResourceCard
+**Files changed:** `src/features/pathfinder/components/SiteResourceCard.tsx`
+**What was wrong:** Per-site Pathfinder resource card (header, alert, resource grid) inlined in a filtered `.map()` in `App.tsx`.
+**What was fixed:** Extracted to `SiteResourceCard` with `{ site: DigSite }` prop, imports `resourceMap`/`sourceTypeIcon` from `../constants`.
+
+---
+
+### Fix 2.6 — Extract WorldMap
+**Files changed:** `src/features/expedition/components/WorldMap.tsx`
+**What was wrong:** The entire world map section (header, legend, map container, weather layers, site markers) was inline in `App.tsx`. `selectedSite` state lived in the parent.
+**What was fixed:** Extracted to `WorldMap` with `{ digSites }` prop. Owns `selectedSite` state. Renders `<SiteDetailPanel key={selectedSite.id} ... />` — the `key` forces a fresh panel mount (and fresh opening animation) on every site change.
+
+---
+
+### Fix 2.7 — Slim App.tsx to tab orchestration; rename to App
+**Files changed:** `src/App.tsx`
+**What was wrong:** `App.tsx` was 1,347 lines mixing data, helpers, components, state, and orchestration.
+**What was fixed:** Reduced to 157 lines. Contains only: `mainTab` state, `useIntroSplash` hook, 4 nav tab buttons, `AnimatePresence` with 4 `motion.div` tabs delegating to feature components. Renamed from `DigSiteLocator` to `App` to match `main.tsx` import.
