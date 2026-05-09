@@ -23,7 +23,7 @@
 | 7 | Type Safety (TypeScript) | COMPLETE |
 | 8 | Security | COMPLETE |
 | 9 | Unit Tests | COMPLETE |
-| 10 | Accessibility | PENDING |
+| 10 | Accessibility | COMPLETE |
 
 ---
 
@@ -285,3 +285,4 @@ return <main layout>
 | 4       | 2026-05-10 | —                | Section 7 complete — 4 type fixes: WeatherCondition key on resourceMap, SourceType union, sourceTypeIcon return type, getSiteIcon status narrowed |
 | 4 (cont) | 2026-05-10 | —               | Section 8 complete — 1 fix: .env and .env.* added to .gitignore; all other checks pass clean |
 | 4 (cont) | 2026-05-10 | —               | Section 9 complete — Vitest installed; 4 test files, 26 tests all passing; test/test:watch scripts added |
+| 4 (cont) | 2026-05-10 | —               | Section 10 complete — 6 a11y fixes: aria-label on 4 icon-only buttons, role=tab+aria-selected on both tab sets, role=tablist on both containers |

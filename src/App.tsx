@@ -38,8 +38,10 @@ const App = () => {
 
         {/* Main Navigation Tabs */}
         <div className="mb-4 md:mb-6">
-          <div className="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-cyan-500/30 p-1 md:p-2 flex flex-col md:flex-row gap-2">
+          <div role="tablist" aria-label="Main navigation" className="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-cyan-500/30 p-1 md:p-2 flex flex-col md:flex-row gap-2">
             <button
+              role="tab"
+              aria-selected={mainTab === 'expedition'}
               onClick={() => setMainTab('expedition')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'expedition'
                 ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
@@ -50,6 +52,8 @@ const App = () => {
               EXPEDITION MAP
             </button>
             <button
+              role="tab"
+              aria-selected={mainTab === 'scientists'}
               onClick={() => setMainTab('scientists')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'scientists'
                 ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
@@ -60,6 +64,8 @@ const App = () => {
               SCIENTISTS
             </button>
             <button
+              role="tab"
+              aria-selected={mainTab === 'marketplace'}
               onClick={() => setMainTab('marketplace')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'marketplace'
                 ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'
@@ -70,6 +76,8 @@ const App = () => {
               MARKETPLACE
             </button>
             <button
+              role="tab"
+              aria-selected={mainTab === 'pathfinder'}
               onClick={() => setMainTab('pathfinder')}
               className={`flex-1 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-xs md:text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${mainTab === 'pathfinder'
                 ? 'bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 shadow-lg shadow-cyan-500/20'

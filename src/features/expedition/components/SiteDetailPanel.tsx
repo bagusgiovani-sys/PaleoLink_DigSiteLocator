@@ -93,6 +93,7 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
             </div>
             <button
               onClick={handleClose}
+              aria-label="Close"
               className="text-cyan-400 hover:text-cyan-300 transition-colors animate-scale-in"
             >
               <X className="w-5 h-5" />
@@ -129,8 +130,10 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
           )}
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-3 border-b border-cyan-500/30">
+          <div role="tablist" aria-label="Site information" className="flex gap-2 mb-3 border-b border-cyan-500/30">
             <button
+              role="tab"
+              aria-selected={activeTab === 'details'}
               onClick={() => setActiveTab('details')}
               className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'details'
                 ? 'text-cyan-400 border-b-2 border-cyan-400'
@@ -140,6 +143,8 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
               Site Details
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'safety'}
               onClick={() => setActiveTab('safety')}
               className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'safety'
                 ? 'text-cyan-400 border-b-2 border-cyan-400'
@@ -149,6 +154,8 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
               Safety Profile
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'model'}
               onClick={() => setActiveTab('model')}
               className={`px-3 py-2 text-xs font-semibold transition-colors ${activeTab === 'model'
                 ? 'text-cyan-400 border-b-2 border-cyan-400'

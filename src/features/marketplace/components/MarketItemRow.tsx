@@ -37,7 +37,7 @@ const MarketItemRow = ({ item }: Props) => {
         </div>
 
         <div className="col-span-1 flex justify-end">
-          <button className="p-1.5 md:p-2 bg-cyan-600/80 hover:bg-cyan-600 rounded text-white transition-colors">
+          <button aria-label={`Add ${item.name} to cart`} className="p-1.5 md:p-2 bg-cyan-600/80 hover:bg-cyan-600 rounded text-white transition-colors">
             <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>

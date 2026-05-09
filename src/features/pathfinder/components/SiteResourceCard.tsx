@@ -77,7 +77,7 @@ const SiteResourceCard = ({ site }: Props) => {
                 </div>
               </div>
               {resource.available && (
-                <button className="flex-shrink-0 p-1.5 bg-cyan-500/20 border border-cyan-500/40 rounded text-cyan-400 hover:bg-cyan-500/30 transition-colors">
+                <button aria-label={`Contact ${resource.source}`} className="flex-shrink-0 p-1.5 bg-cyan-500/20 border border-cyan-500/40 rounded text-cyan-400 hover:bg-cyan-500/30 transition-colors">
                   <Phone className="w-3 h-3" />
                 </button>
               )}

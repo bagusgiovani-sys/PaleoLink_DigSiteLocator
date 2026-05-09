@@ -103,6 +103,7 @@ const WorldMap = ({ digSites }: Props) => {
             >
               <button
                 onClick={() => setSelectedSite(selectedSite?.id === site.id ? null : site)}
+                aria-label={`${site.name} — ${site.weather.condition}, ${site.weather.severity}`}
                 className="relative group z-10"
               >
                 <div className="relative">

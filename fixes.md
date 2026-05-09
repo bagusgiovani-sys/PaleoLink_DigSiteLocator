@@ -324,6 +324,59 @@ src/utils/
 
 ---
 
+## Section 10 — Accessibility
+**Completed:** 2026-05-10
+
+---
+
+### Fix 10.1 — Close button: add `aria-label="Close"`
+**Type:** A11Y
+**File(s) changed:** `src/features/expedition/components/SiteDetailPanel.tsx`
+**What was wrong:** The X button in the site detail panel contained only a Lucide `<X>` icon with no accessible name. Screen readers would announce it as an unlabeled button.
+**What was fixed:** Added `aria-label="Close"` to the button.
+
+---
+
+### Fix 10.2 — Site marker buttons: add descriptive `aria-label`
+**Type:** A11Y
+**File(s) changed:** `src/features/expedition/components/WorldMap.tsx`
+**What was wrong:** Each dig site marker button rendered only icon SVGs (severity ping circle, site type icon, weather icon). Keyboard and screen reader users had no way to identify which site a button represented.
+**What was fixed:** Added `aria-label={`${site.name} — ${site.weather.condition}, ${site.weather.severity}`}` — announces the site name, current weather condition, and severity level.
+
+---
+
+### Fix 10.3 — Marketplace cart button: add `aria-label`
+**Type:** A11Y
+**File(s) changed:** `src/features/marketplace/components/MarketItemRow.tsx`
+**What was wrong:** The add-to-cart button rendered only a `<ShoppingCart>` icon with no text or label.
+**What was fixed:** Added `aria-label={`Add ${item.name} to cart`}`.
+
+---
+
+### Fix 10.4 — Pathfinder contact button: add `aria-label`
+**Type:** A11Y
+**File(s) changed:** `src/features/pathfinder/components/SiteResourceCard.tsx`
+**What was wrong:** The phone/contact button in each resource card rendered only a `<Phone>` icon with no accessible name.
+**What was fixed:** Added `aria-label={`Contact ${resource.source}`}` — announces the institution name being contacted.
+
+---
+
+### Fix 10.5 — Main nav tabs: add ARIA tab pattern
+**Type:** A11Y
+**File(s) changed:** `src/App.tsx`
+**What was wrong:** The four main navigation tab buttons had no ARIA roles. Screen readers would announce them as individual unlabeled buttons with no relationship to each other.
+**What was fixed:** Added `role="tablist"` + `aria-label="Main navigation"` to the container div; added `role="tab"` and `aria-selected={mainTab === '…'}` to each of the four buttons.
+
+---
+
+### Fix 10.6 — Site detail panel tabs: add ARIA tab pattern
+**Type:** A11Y
+**File(s) changed:** `src/features/expedition/components/SiteDetailPanel.tsx`
+**What was wrong:** The three inner tabs (Site Details / Safety Profile / 3D Data) had no ARIA roles or selected state.
+**What was fixed:** Added `role="tablist"` + `aria-label="Site information"` to the container div; added `role="tab"` and `aria-selected={activeTab === '…'}` to each button.
+
+---
+
 ## Section 9 — Unit Tests
 **Completed:** 2026-05-10
 
