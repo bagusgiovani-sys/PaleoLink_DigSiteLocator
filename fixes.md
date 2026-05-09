@@ -218,3 +218,26 @@ src/utils/
 **What was wrong:** The Pathfinder "RESOURCES MATCHED" stat box displayed the hardcoded value `12`. The actual count of available resources across all alert sites is **15** — so the value was also wrong.
 **What was fixed:** Added `import { resourceMap }` from `./features/pathfinder/constants`. Added a module-level `const resourcesMatched` that computes the count: filter digSites by `weather.alert`, flatMap to tools arrays via resourceMap, filter by `available: true`, take `.length`. Replaced literal `12` with `{resourcesMatched}`.
 **Why:** Stat boxes should always reflect live data. Hardcoded values silently diverge as data changes and are a class of derived-state bug (`useState` or hardcode instead of computing).
+
+---
+
+## Section 4 — Error Handling
+**Completed:** 2026-05-09
+
+---
+
+### Fix 4.1 — State-based world map image fallback
+**Type:** QUAL
+**File(s) changed:** `src/features/expedition/components/WorldMap.tsx`
+**What was wrong:** `onError` imperatively set `e.currentTarget.style.display = 'none'` — the image silently disappeared with no user-visible indication. The parent container remained, leaving an invisible element in the DOM.
+**What was fixed:** Added `mapImgFailed: boolean` state. `onError` now calls `setMapImgFailed(true)`. When true, renders a "MAP IMAGE UNAVAILABLE" placeholder instead of the hidden `<img>`. Map functionality (markers, weather, grid overlay) is unaffected.
+**Why:** Declarative state is the React idiom for conditional rendering. Imperative DOM mutations inside `onError` bypass React's reconciler and leave the DOM in an inconsistent state relative to React's view of it.
+
+---
+
+### Fix 4.2 — Add ErrorBoundary component; wrap all four tabs
+**Type:** QUAL
+**File(s) changed:** `src/components/shared/ErrorBoundary.tsx` (created), `src/App.tsx`
+**What was wrong:** No error boundaries existed. A render error in any component (e.g. WeatherAnimation, SiteDetailPanel, ScientistCard) would unmount the entire React tree, showing a blank page.
+**What was fixed:** Created `ErrorBoundary` as a React class component (the only way to implement error boundaries). Uses `getDerivedStateFromError` to catch render errors. Shows a "SECTION UNAVAILABLE" fallback styled to match the app theme. Wrapped the content inside each of the four `motion.div` tab containers in `App.tsx`.
+**Why:** Error boundaries are the standard React mechanism for graceful degradation. Wrapping at the tab level means one broken tab doesn't break the others — the header, navigation, and other tabs remain fully functional.

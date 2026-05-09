@@ -10,6 +10,7 @@ interface Props {
 
 const WorldMap = ({ digSites }: Props) => {
   const [selectedSite, setSelectedSite] = useState<DigSite | null>(null);
+  const [mapImgFailed, setMapImgFailed] = useState(false);
 
   return (
     /* Map Section */
@@ -42,15 +43,19 @@ const WorldMap = ({ digSites }: Props) => {
 
           {/* World Map Background Image */}
           <div className="absolute inset-0 overflow-hidden rounded-lg">
-            <img
-              src="/assets/world_map.png"
-              alt="World Map"
-              className="w-full h-full object-cover opacity-60"
-              style={{ filter: 'brightness(0.7) contrast(1.3)' }}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+            {mapImgFailed ? (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-slate-600 text-xs tracking-wider">MAP IMAGE UNAVAILABLE</span>
+              </div>
+            ) : (
+              <img
+                src="/assets/world_map.png"
+                alt="World Map"
+                className="w-full h-full object-cover opacity-60"
+                style={{ filter: 'brightness(0.7) contrast(1.3)' }}
+                onError={() => setMapImgFailed(true)}
+              />
+            )}
           </div>
 
           {/* Grid overlay */}

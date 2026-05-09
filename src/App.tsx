@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { MainTab } from './types';
 import { useIntroSplash } from './hooks/useIntroSplash';
 import IntroSplash from './components/shared/IntroSplash';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 import WorldMap from './features/expedition/components/WorldMap';
 import StatsFooter from './features/expedition/components/StatsFooter';
 import ScientistCard from './features/scientists/components/ScientistCard';
@@ -91,8 +92,10 @@ const App = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <WorldMap digSites={digSites} />
-              <StatsFooter digSites={digSites} />
+              <ErrorBoundary>
+                <WorldMap digSites={digSites} />
+                <StatsFooter digSites={digSites} />
+              </ErrorBoundary>
             </motion.div>
           ) : mainTab === 'scientists' ? (
             <motion.div
@@ -102,13 +105,15 @@ const App = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
-                <h2 className="text-xl md:text-2xl font-bold text-cyan-400 mb-4 md:mb-6 tracking-wide">RECRUITMENT</h2>
+              <ErrorBoundary>
+                <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
+                  <h2 className="text-xl md:text-2xl font-bold text-cyan-400 mb-4 md:mb-6 tracking-wide">RECRUITMENT</h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                  {scientists.map(s => <ScientistCard key={s.id} scientist={s} />)}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                    {scientists.map(s => <ScientistCard key={s.id} scientist={s} />)}
+                  </div>
                 </div>
-              </div>
+              </ErrorBoundary>
             </motion.div>
           ) : mainTab === 'marketplace' ? (
             <motion.div
@@ -118,23 +123,25 @@ const App = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 md:mb-6 gap-3">
-                  <div>
-                    <h2 className="text-xl md:text-2xl font-bold text-cyan-400 tracking-wide">MARKETPLACE</h2>
-                    <p className="text-gray-400 text-xs md:text-sm">DINOSAURS › FLYING</p>
+              <ErrorBoundary>
+                <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 md:mb-6 gap-3">
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-bold text-cyan-400 tracking-wide">MARKETPLACE</h2>
+                      <p className="text-gray-400 text-xs md:text-sm">DINOSAURS › FLYING</p>
+                    </div>
+                    <button className="px-4 md:px-6 py-2 bg-cyan-600/80 hover:bg-cyan-600 rounded-lg text-white text-sm md:text-base font-semibold flex items-center justify-center gap-2 transition-colors">
+                      <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
+                      <span className="hidden sm:inline">REFRESH LIST</span>
+                      <span className="text-xs">$50,000</span>
+                    </button>
                   </div>
-                  <button className="px-4 md:px-6 py-2 bg-cyan-600/80 hover:bg-cyan-600 rounded-lg text-white text-sm md:text-base font-semibold flex items-center justify-center gap-2 transition-colors">
-                    <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
-                    <span className="hidden sm:inline">REFRESH LIST</span>
-                    <span className="text-xs">$50,000</span>
-                  </button>
-                </div>
 
-                <div className="grid grid-cols-1 gap-2 md:gap-3">
-                  {marketItems.map(i => <MarketItemRow key={i.id} item={i} />)}
+                  <div className="grid grid-cols-1 gap-2 md:gap-3">
+                    {marketItems.map(i => <MarketItemRow key={i.id} item={i} />)}
+                  </div>
                 </div>
-              </div>
+              </ErrorBoundary>
             </motion.div>
           ) : null}
 
@@ -146,6 +153,7 @@ const App = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
+              <ErrorBoundary>
               {/* PathFinder Header */}
               <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30 p-4 md:p-6 shadow-2xl shadow-cyan-500/20">
                 <div className="flex items-center gap-3 mb-2">
@@ -175,6 +183,7 @@ const App = () => {
                   {digSites.filter(s => s.weather.alert).map(s => <SiteResourceCard key={s.id} site={s} />)}
                 </div>
               </div>
+              </ErrorBoundary>
             </motion.div>
           )}
         </AnimatePresence>
