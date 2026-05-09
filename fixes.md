@@ -324,6 +324,38 @@ src/utils/
 
 ---
 
+## Section 9 — Unit Tests
+**Completed:** 2026-05-10
+
+---
+
+### Fix 9.1 — Install Vitest + @testing-library/react + jsdom
+**Type:** DX
+**File(s) changed:** `package.json` (devDependencies), `vite.config.ts`
+**What was wrong:** No test runner was installed or configured. `package.json` had no `test` script.
+**What was fixed:** Installed `vitest`, `@testing-library/react`, `jsdom`. Changed `vite.config.ts` import to `vitest/config` to gain the `test` property type and added `test: { environment: 'jsdom' }`. Added `"test": "vitest run"` and `"test:watch": "vitest"` scripts.
+**Why:** Without a test runner there is no automated safety net. Vitest shares the Vite config (same transform pipeline, same module resolution) so it works with zero extra configuration beyond the environment setting.
+
+---
+
+### Fix 9.2 — Write 26 unit tests across 4 test files
+**Type:** TEST
+**File(s) changed:** (created)
+- `src/features/expedition/utils/safetyHelpers.test.ts` (8 tests)
+- `src/features/expedition/utils/weatherHelpers.test.tsx` (11 tests)
+- `src/hooks/useIntroSplash.test.ts` (3 tests)
+- `src/components/shared/ErrorBoundary.test.tsx` (3 tests — renders children, catches error, hides children on error)
+
+**What was wrong:** Zero test files existed.
+**What was fixed:**
+- `safetyHelpers` — boundary-value tests at score 3 (Low), 4 (Medium), 6 (Medium), 7 (High); full CSS class assertions; max-hazard profile; individual score contribution checks
+- `weatherHelpers` — all 3 `getWeatherColor` return values; all 5 `getWeatherIcon` conditions render SVG; all 4 `getSiteIcon` combinations render SVG
+- `useIntroSplash` — initial `true`, still `true` at 2999 ms, flips to `false` at 3000 ms (fake timers)
+- `ErrorBoundary` — renders children normally; catches thrown error and shows fallback; hides children in error state
+**Results:** 26/26 tests pass. `npm run typecheck` and `npm run build` both still clean.
+
+---
+
 ## Section 8 — Security
 **Completed:** 2026-05-10
 

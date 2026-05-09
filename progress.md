@@ -22,7 +22,7 @@
 | 6 | Dead Code & Cleanliness | COMPLETE |
 | 7 | Type Safety (TypeScript) | COMPLETE |
 | 8 | Security | COMPLETE |
-| 9 | Unit Tests | PENDING |
+| 9 | Unit Tests | COMPLETE |
 | 10 | Accessibility | PENDING |
 
 ---
@@ -284,3 +284,4 @@ return <main layout>
 | 3 (session end) | 2026-05-09 | session end | Sections 3-6 complete. Next: Section 7 — Type Safety (TypeScript). |
 | 4       | 2026-05-10 | —                | Section 7 complete — 4 type fixes: WeatherCondition key on resourceMap, SourceType union, sourceTypeIcon return type, getSiteIcon status narrowed |
 | 4 (cont) | 2026-05-10 | —               | Section 8 complete — 1 fix: .env and .env.* added to .gitignore; all other checks pass clean |
+| 4 (cont) | 2026-05-10 | —               | Section 9 complete — Vitest installed; 4 test files, 26 tests all passing; test/test:watch scripts added |
