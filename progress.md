@@ -19,7 +19,7 @@
 | 3 | State Management | COMPLETE |
 | 4 | Error Handling | COMPLETE |
 | 5 | Performance | COMPLETE |
-| 6 | Dead Code & Cleanliness | PENDING |
+| 6 | Dead Code & Cleanliness | COMPLETE |
 | 7 | Type Safety (TypeScript) | PENDING |
 | 8 | Security | PENDING |
 | 9 | Unit Tests | PENDING |
@@ -258,17 +258,17 @@ return <main layout>
 - [x] **[ARCH]** Section 2 — Split `App.tsx` into feature components — COMPLETE
 - [x] **[QUAL]** Add error boundaries around tab content
 - [x] **[QUAL]** Fix hardcoded `"12"` for RESOURCES MATCHED — derive from actual data (`src/App.tsx` pathfinder section)
-- [ ] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
+- [x] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
 
 ## Milestone 3 — Quality & Polish
 - [x] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
-- [ ] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
+- [x] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
 - [x] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
 - [ ] **[A11Y]** Add `aria-label` to site detail panel close button
 - [ ] **[A11Y]** Add accessible labels to site marker buttons
 - [ ] **[QUAL]** Add `onClick` handlers to "Document" and "Satellite Scan" buttons
 - [ ] **[DEP]** Upgrade `lucide-react` from `^0.263.1` to current (check for icon renames first)
-- [ ] **[QUAL]** Add `typescript` as explicit `devDependency`
+- [x] **[QUAL]** Add `typescript` as explicit `devDependency`
 
 ---
 
@@ -280,3 +280,4 @@ return <main layout>
 | 3       | 2026-05-09 | —                | Section 3 complete — 2 fixes: IIFE removed, hardcoded "12" replaced with derived count (actual: 15) |
 | 4       | 2026-05-09 | —                | Section 4 complete — 2 fixes: ErrorBoundary component + 4 tab wrappers; world map image state-based fallback |
 | 5       | 2026-05-09 | —                | Section 5 complete — 1 fix: memoize Math.random() particle positions in WeatherAnimation with useMemo |
+| 6       | 2026-05-09 | —                | Section 6 complete — 6 fixes: wrong CloudSnow icon, .gitkeep cleanup, empty dirs, tailwind.config.js restored, ESLint+TS installed, icon: any typed |

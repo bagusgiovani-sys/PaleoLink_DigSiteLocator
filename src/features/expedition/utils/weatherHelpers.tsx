@@ -1,4 +1,4 @@
-import { Sun, CloudRain, CloudSnow, Cloud, Wind, Wrench, Gem, Box } from 'lucide-react';
+import { Sun, CloudRain, CloudLightning, Cloud, Wind, Wrench, Gem, Box } from 'lucide-react';
 import type { WeatherCondition, SiteType, WeatherSeverity } from '../../../types';
 
 export const getWeatherColor = (severity: WeatherSeverity) => {
@@ -13,7 +13,7 @@ export const getWeatherIcon = (condition: WeatherCondition) => {
   switch (condition) {
     case 'sunny': return <Sun className="w-4 h-4" />;
     case 'rainy': return <CloudRain className="w-4 h-4" />;
-    case 'thunderstorm': return <CloudSnow className="w-4 h-4" />;
+    case 'thunderstorm': return <CloudLightning className="w-4 h-4" />;
     case 'flood': return <Cloud className="w-4 h-4" />;
     case 'typhoon': return <Wind className="w-4 h-4" />;
   }

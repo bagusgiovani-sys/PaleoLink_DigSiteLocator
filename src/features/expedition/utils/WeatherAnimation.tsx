@@ -1,28 +1,24 @@
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { WeatherCondition } from '../../../types';
 
 const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
-  const rainyParticles = useMemo(
-    () => [...Array(20)].map(() => ({
+  const [rainyParticles] = useState(() =>
+    [...Array(20)].map(() => ({
+      initialX: Math.random() * 100,
+      animateX: Math.random() * 100,
+      delay: Math.random() * 2,
+    }))
+  );
+
+  const [thunderParticles] = useState(() => ({
+    drops: [...Array(15)].map(() => ({
       initialX: Math.random() * 100,
       animateX: Math.random() * 100,
       delay: Math.random() * 2,
     })),
-    []
-  );
-
-  const thunderParticles = useMemo(
-    () => ({
-      drops: [...Array(15)].map(() => ({
-        initialX: Math.random() * 100,
-        animateX: Math.random() * 100,
-        delay: Math.random() * 2,
-      })),
-      lightningDelay: Math.random() * 3 + 2,
-    }),
-    []
-  );
+    lightningDelay: Math.random() * 3 + 2,
+  }));
 
   switch (condition) {
     case 'rainy':

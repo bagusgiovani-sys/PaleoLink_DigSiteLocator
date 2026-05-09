@@ -253,5 +253,71 @@ src/utils/
 **Type:** PERF
 **File(s) changed:** `src/features/expedition/utils/WeatherAnimation.tsx`
 **What was wrong:** `Math.random()` was called inline in `initial.x`, `animate.x`, and `transition.delay` props for 20 rain drops (`rainy`) and 15 rain drops + 1 lightning delay (`thunderstorm`). These expressions evaluate on every render. Since `WeatherAnimation` re-renders whenever its parent `WorldMap` re-renders (e.g. when `selectedSite` changes), all particle positions and delays regenerated on every map interaction — causing all animations to restart with new random positions (visually: particles teleport on every site-pin click).
-**What was fixed:** Added two `useMemo` calls with empty dependency arrays — `rainyParticles` (array of `{ initialX, animateX, delay }` × 20) and `thunderParticles` (`{ drops: [...] × 15, lightningDelay }`). Both are computed once at component mount and remain stable for the component's lifetime. All `Math.random()` removed from JSX.
-**Why:** Random values used as animation seed values must be stable. `useMemo(fn, [])` is the correct React idiom for one-time-per-mount initialization of derived data. Note: both `useMemo` calls are always invoked (not inside the switch) to comply with Rules of Hooks; the unused case's memo is a one-time negligible cost.
+**What was fixed:** Added two `useState` lazy initializers — `rainyParticles` (array of `{ initialX, animateX, delay }` × 20) and `thunderParticles` (`{ drops: [...] × 15, lightningDelay }`). Lazy initializers are called once at mount and never again. All `Math.random()` removed from JSX.
+**Why:** Random values used as animation seed values must be stable. `useState(() => ...)` is the correct React idiom — the initializer runs exactly once at mount and is not re-evaluated on re-renders. Note: `useMemo` was initially used but the `react-hooks/purity` ESLint rule correctly flagged it (useMemo callbacks can re-run in concurrent mode; `Math.random` inside useMemo violates render purity). `useState` initializers are not subject to this constraint.
+
+---
+
+## Section 6 — Dead Code & Cleanliness
+**Completed:** 2026-05-09
+
+---
+
+### Fix 6.1 — Wrong icon: CloudSnow → CloudLightning for thunderstorm
+**Type:** QUAL
+**File(s) changed:** `src/features/expedition/utils/weatherHelpers.tsx`
+**What was wrong:** `getWeatherIcon('thunderstorm')` returned `<CloudSnow />` — a snowflake icon. This has been wrong since the original code; thunderstorm should show a lightning icon.
+**What was fixed:** Replaced `CloudSnow` import and usage with `CloudLightning`.
+**Why:** Wrong icon is dead/incorrect code — the original author probably grabbed the wrong icon name.
+
+---
+
+### Fix 6.2 — Remove .gitkeep files from non-empty directories
+**Type:** DX
+**File(s) changed:** 6 `.gitkeep` files deleted from `expedition/components/`, `expedition/utils/`, `marketplace/components/`, `pathfinder/components/`, `scientists/components/`, `hooks/`
+**What was wrong:** `.gitkeep` files are placeholder files to track empty directories in git. All 6 directories now contain real files — the `.gitkeep` files are dead scaffolding.
+**What was fixed:** Deleted all 6 files.
+
+---
+
+### Fix 6.3 — Remove empty scaffold directories never populated
+**Type:** DX
+**File(s) changed:** `src/features/expedition/hooks/` (dir + .gitkeep), `src/utils/` (dir + .gitkeep)
+**What was wrong:** Both directories were created as scaffolding in Section 1 with the expectation that content would be added in Section 2. `useDigSitePanel` was never extracted (state stayed inside `SiteDetailPanel`), and no utility functions needed a shared `utils/` folder.
+**What was fixed:** Both empty directories removed.
+**Why:** Dead structure — empty directories in source trees create confusion about whether something is "coming soon" or forgotten.
+
+---
+
+### Fix 6.4 — Restore tailwind.config.js with correct content globs
+**Type:** PERF + QUAL
+**File(s) changed:** `tailwind.config.js` (restored)
+**What was wrong:** `tailwind.config.js` was deleted (unstaged working tree deletion). Without content configuration, Tailwind CSS generates a near-empty CSS file (just Preflight base styles) in production builds — all utility classes are missing, leaving the app largely unstyled in production. The build warning confirmed this: "your generated CSS will be missing styles."
+**What was fixed:** Restored with standard Vite + React content globs (`./index.html`, `./src/**/*.{js,ts,jsx,tsx}`). CSS bundle now correctly includes all used utility classes (5.60 kB → 23.32 kB — the increase is correct; the previous 5.60 kB was broken).
+**Why:** Tailwind v3 requires content configuration for production CSS generation; without it the production bundle is missing most styles.
+
+---
+
+### Fix 6.5 — Install ESLint + TypeScript; add lint and typecheck scripts
+**Type:** DX
+**File(s) changed:** `package.json`
+**What was wrong:** `eslint.config.js` referenced `eslint`, `@eslint/js`, `globals`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, and `typescript-eslint` — none of which were installed. `typescript` was also used (Vite's TypeScript project) but not in `devDependencies`. `package.json` had no `lint` or `typecheck` scripts.
+**What was fixed:** Installed all 7 missing devDependencies. Added `"lint": "eslint ."` and `"typecheck": "tsc --noEmit"` scripts. Running lint revealed 2 further issues (Fix 6.6, 6.7).
+**Why:** Dead config files that can't run are misleading — they signal intent but provide no actual value.
+
+---
+
+### Fix 6.6 — WeatherAnimation: useMemo → useState lazy init for particle positions
+**Type:** QUAL (lint-driven)
+**File(s) changed:** `src/features/expedition/utils/WeatherAnimation.tsx`
+**What was wrong:** ESLint's `react-hooks/purity` rule (from newly-installed `eslint-plugin-react-hooks` v7) flagged `Math.random()` inside `useMemo` callbacks. The rule is correct: `useMemo` can re-run in React's concurrent mode, making `Math.random()` inside it a purity violation. This was introduced in Fix 5.1.
+**What was fixed:** Changed `useMemo` → `useState` lazy initializers (`useState(() => ...)`). Lazy initializers run exactly once at mount, are never re-evaluated on re-renders, and are not subject to purity rules.
+
+---
+
+### Fix 6.7 — pathfinder/constants.tsx: icon: any → icon: LucideIcon
+**Type:** QUAL (lint-driven)
+**File(s) changed:** `src/features/pathfinder/constants.tsx`
+**What was wrong:** `resourceMap` typed `icon` as `any` — ESLint's `@typescript-eslint/no-explicit-any` flagged this correctly.
+**What was fixed:** Added `import type { LucideIcon } from 'lucide-react'`; replaced `icon: any` with `icon: LucideIcon` in the resource map type.
+**Why:** `any` defeats TypeScript's type safety. `LucideIcon` is the correct type for Lucide icon components and was already available from the installed version.

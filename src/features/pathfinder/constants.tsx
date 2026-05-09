@@ -1,6 +1,7 @@
 import { Radio, Wrench, Droplets, Box, Zap, Satellite, Camera, Thermometer, GraduationCap, Building2, Truck } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-export const resourceMap: Record<string, { tools: { name: string; source: string; sourceType: string; distance: string; eta: string; available: boolean; icon: any }[] }> = {
+export const resourceMap: Record<string, { tools: { name: string; source: string; sourceType: string; distance: string; eta: string; available: boolean; icon: LucideIcon }[] }> = {
   flood: {
     tools: [
       { name: "LiDAR Ground Scanner", source: "MIT Geosciences Dept.", sourceType: "University", distance: "12 km", eta: "45 min", available: true, icon: Radio },
