@@ -16,7 +16,7 @@
 |---|---------|--------|
 | 1 | Folder Structure & Architecture | COMPLETE |
 | 2 | Component Architecture | COMPLETE |
-| 3 | State Management | PENDING |
+| 3 | State Management | COMPLETE |
 | 4 | Error Handling | PENDING |
 | 5 | Performance | PENDING |
 | 6 | Dead Code & Cleanliness | PENDING |
@@ -257,13 +257,13 @@ return <main layout>
 - [x] **[DX]** Delete `src/assets/react.svg` (unused Vite default)
 - [x] **[ARCH]** Section 2 — Split `App.tsx` into feature components — COMPLETE
 - [ ] **[QUAL]** Add error boundaries around tab content
-- [ ] **[QUAL]** Fix hardcoded `"12"` for RESOURCES MATCHED — derive from actual data (`src/App.tsx` pathfinder section)
+- [x] **[QUAL]** Fix hardcoded `"12"` for RESOURCES MATCHED — derive from actual data (`src/App.tsx` pathfinder section)
 - [ ] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
 
 ## Milestone 3 — Quality & Polish
 - [ ] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
 - [ ] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
-- [ ] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
+- [x] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
 - [ ] **[A11Y]** Add `aria-label` to site detail panel close button
 - [ ] **[A11Y]** Add accessible labels to site marker buttons
 - [ ] **[QUAL]** Add `onClick` handlers to "Document" and "Satellite Scan" buttons
@@ -277,3 +277,4 @@ return <main layout>
 |---------|------------|------------------|------------------------------------------------------------|
 | 1       | 2026-05-08 | ~40%             | origin.md created; Milestone 1 complete; Milestone 2 partial (3/7 done) |
 | 2       | 2026-05-08 | ~60%             | Section 2 complete — App.tsx reduced to 157 lines; 14 new files extracted |
+| 3       | 2026-05-09 | —                | Section 3 complete — 2 fixes: IIFE removed, hardcoded "12" replaced with derived count (actual: 15) |

@@ -188,3 +188,33 @@ src/utils/
 **Files changed:** `src/App.tsx`
 **What was wrong:** `App.tsx` was 1,347 lines mixing data, helpers, components, state, and orchestration.
 **What was fixed:** Reduced to 157 lines. Contains only: `mainTab` state, `useIntroSplash` hook, 4 nav tab buttons, `AnimatePresence` with 4 `motion.div` tabs delegating to feature components. Renamed from `DigSiteLocator` to `App` to match `main.tsx` import.
+
+---
+
+## Section 3 — State Management
+**Completed:** 2026-05-09
+
+**State inventory (all correct, no structural issues):**
+- `mainTab` in `App` — top-level nav, correctly owned by the orchestrator
+- `showIntro` via `useIntroSplash()` — timer-based state, correctly encapsulated in a custom hook
+- `selectedSite` in `WorldMap` — panel selection, correctly local (no other component needs it)
+- `animatingItems`, `activeTab`, `showModel` in `SiteDetailPanel` — all local panel state, correctly placed
+- No state requires Context or useReducer — app is simple enough
+
+---
+
+### Fix 3.1 — Replace IIFE in safety tab with component-level const
+**Type:** QUAL
+**File(s) changed:** `src/features/expedition/components/SiteDetailPanel.tsx`
+**What was wrong:** The safety tab JSX was wrapped in a `{(() => { const risk = ...; return (...) })()}` IIFE to introduce a local variable inside JSX. This pattern adds indentation, obscures the component structure, and is not idiomatic React.
+**What was fixed:** `const risk = calculateSafetyRisk(site.safetyProfile)` moved to component scope (directly after `panelRef`). The IIFE wrapper removed; safety tab JSX now uses `risk` directly.
+**Why:** Computed values needed in JSX belong at component scope, not inside IIFEs. The calculation is pure, cheap, and correct to run on every render.
+
+---
+
+### Fix 3.2 — Derive RESOURCES MATCHED count from actual data
+**Type:** QUAL
+**File(s) changed:** `src/App.tsx`, `src/features/pathfinder/constants.tsx` (read-only)
+**What was wrong:** The Pathfinder "RESOURCES MATCHED" stat box displayed the hardcoded value `12`. The actual count of available resources across all alert sites is **15** — so the value was also wrong.
+**What was fixed:** Added `import { resourceMap }` from `./features/pathfinder/constants`. Added a module-level `const resourcesMatched` that computes the count: filter digSites by `weather.alert`, flatMap to tools arrays via resourceMap, filter by `available: true`, take `.length`. Replaced literal `12` with `{resourcesMatched}`.
+**Why:** Stat boxes should always reflect live data. Hardcoded values silently diverge as data changes and are a class of derived-state bug (`useState` or hardcode instead of computing).

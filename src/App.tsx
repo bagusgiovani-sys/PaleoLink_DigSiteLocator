@@ -12,6 +12,12 @@ import SiteResourceCard from './features/pathfinder/components/SiteResourceCard'
 import { digSites } from './constants/digSites';
 import { scientists } from './features/scientists/constants';
 import { marketItems } from './features/marketplace/constants';
+import { resourceMap } from './features/pathfinder/constants';
+
+const resourcesMatched = digSites
+  .filter(s => s.weather.alert)
+  .flatMap(s => resourceMap[s.weather.condition]?.tools ?? [])
+  .filter(r => r.available).length;
 
 const App = () => {
   const showIntro = useIntroSplash();
@@ -159,7 +165,7 @@ const App = () => {
                     <p className="text-yellow-400 text-xs tracking-wide mt-1">WARNING SITES</p>
                   </div>
                   <div className="bg-cyan-500/10 border border-cyan-500/40 rounded-lg p-3 text-center">
-                    <p className="text-cyan-400 text-2xl font-bold">12</p>
+                    <p className="text-cyan-400 text-2xl font-bold">{resourcesMatched}</p>
                     <p className="text-cyan-400 text-xs tracking-wide mt-1">RESOURCES MATCHED</p>
                   </div>
                 </div>
