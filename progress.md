@@ -18,7 +18,7 @@
 | 2 | Component Architecture | COMPLETE |
 | 3 | State Management | COMPLETE |
 | 4 | Error Handling | COMPLETE |
-| 5 | Performance | PENDING |
+| 5 | Performance | COMPLETE |
 | 6 | Dead Code & Cleanliness | PENDING |
 | 7 | Type Safety (TypeScript) | PENDING |
 | 8 | Security | PENDING |
@@ -261,7 +261,7 @@ return <main layout>
 - [ ] **[DX]** Add `lint` script to `package.json` (`eslint.config.js` exists but no script)
 
 ## Milestone 3 — Quality & Polish
-- [ ] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
+- [x] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
 - [ ] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
 - [x] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
 - [ ] **[A11Y]** Add `aria-label` to site detail panel close button
@@ -279,3 +279,4 @@ return <main layout>
 | 2       | 2026-05-08 | ~60%             | Section 2 complete — App.tsx reduced to 157 lines; 14 new files extracted |
 | 3       | 2026-05-09 | —                | Section 3 complete — 2 fixes: IIFE removed, hardcoded "12" replaced with derived count (actual: 15) |
 | 4       | 2026-05-09 | —                | Section 4 complete — 2 fixes: ErrorBoundary component + 4 tab wrappers; world map image state-based fallback |
+| 5       | 2026-05-09 | —                | Section 5 complete — 1 fix: memoize Math.random() particle positions in WeatherAnimation with useMemo |

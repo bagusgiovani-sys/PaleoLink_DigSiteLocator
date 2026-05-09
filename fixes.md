@@ -241,3 +241,17 @@ src/utils/
 **What was wrong:** No error boundaries existed. A render error in any component (e.g. WeatherAnimation, SiteDetailPanel, ScientistCard) would unmount the entire React tree, showing a blank page.
 **What was fixed:** Created `ErrorBoundary` as a React class component (the only way to implement error boundaries). Uses `getDerivedStateFromError` to catch render errors. Shows a "SECTION UNAVAILABLE" fallback styled to match the app theme. Wrapped the content inside each of the four `motion.div` tab containers in `App.tsx`.
 **Why:** Error boundaries are the standard React mechanism for graceful degradation. Wrapping at the tab level means one broken tab doesn't break the others — the header, navigation, and other tabs remain fully functional.
+
+---
+
+## Section 5 — Performance
+**Completed:** 2026-05-09
+
+---
+
+### Fix 5.1 — Memoize Math.random() particle positions in WeatherAnimation
+**Type:** PERF
+**File(s) changed:** `src/features/expedition/utils/WeatherAnimation.tsx`
+**What was wrong:** `Math.random()` was called inline in `initial.x`, `animate.x`, and `transition.delay` props for 20 rain drops (`rainy`) and 15 rain drops + 1 lightning delay (`thunderstorm`). These expressions evaluate on every render. Since `WeatherAnimation` re-renders whenever its parent `WorldMap` re-renders (e.g. when `selectedSite` changes), all particle positions and delays regenerated on every map interaction — causing all animations to restart with new random positions (visually: particles teleport on every site-pin click).
+**What was fixed:** Added two `useMemo` calls with empty dependency arrays — `rainyParticles` (array of `{ initialX, animateX, delay }` × 20) and `thunderParticles` (`{ drops: [...] × 15, lightningDelay }`). Both are computed once at component mount and remain stable for the component's lifetime. All `Math.random()` removed from JSX.
+**Why:** Random values used as animation seed values must be stable. `useMemo(fn, [])` is the correct React idiom for one-time-per-mount initialization of derived data. Note: both `useMemo` calls are always invoked (not inside the switch) to comply with Rules of Hooks; the unused case's memo is a one-time negligible cost.

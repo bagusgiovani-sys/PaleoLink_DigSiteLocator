@@ -1,21 +1,43 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import type { WeatherCondition } from '../../../types';
 
 const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
+  const rainyParticles = useMemo(
+    () => [...Array(20)].map(() => ({
+      initialX: Math.random() * 100,
+      animateX: Math.random() * 100,
+      delay: Math.random() * 2,
+    })),
+    []
+  );
+
+  const thunderParticles = useMemo(
+    () => ({
+      drops: [...Array(15)].map(() => ({
+        initialX: Math.random() * 100,
+        animateX: Math.random() * 100,
+        delay: Math.random() * 2,
+      })),
+      lightningDelay: Math.random() * 3 + 2,
+    }),
+    []
+  );
+
   switch (condition) {
     case 'rainy':
       return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {rainyParticles.map((p, i) => (
             <motion.div
               key={i}
               className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
-              initial={{ y: -20, x: Math.random() * 100 }}
-              animate={{ y: 120, x: Math.random() * 100 }}
+              initial={{ y: -20, x: p.initialX }}
+              animate={{ y: 120, x: p.animateX }}
               transition={{
                 duration: 1,
                 repeat: Infinity,
-                delay: Math.random() * 2,
+                delay: p.delay,
                 ease: "linear"
               }}
             />
@@ -26,16 +48,16 @@ const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
     case 'thunderstorm':
       return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(15)].map((_, i) => (
+          {thunderParticles.drops.map((p, i) => (
             <motion.div
               key={i}
               className="absolute w-0.5 h-4 bg-blue-400 opacity-60"
-              initial={{ y: -20, x: Math.random() * 100 }}
-              animate={{ y: 120, x: Math.random() * 100 }}
+              initial={{ y: -20, x: p.initialX }}
+              animate={{ y: 120, x: p.animateX }}
               transition={{
                 duration: 0.8,
                 repeat: Infinity,
-                delay: Math.random() * 2,
+                delay: p.delay,
                 ease: "linear"
               }}
             />
@@ -47,7 +69,7 @@ const WeatherAnimation = ({ condition }: { condition: WeatherCondition }) => {
             transition={{
               duration: 0.2,
               repeat: Infinity,
-              repeatDelay: Math.random() * 3 + 2
+              repeatDelay: thunderParticles.lightningDelay
             }}
           />
         </div>
