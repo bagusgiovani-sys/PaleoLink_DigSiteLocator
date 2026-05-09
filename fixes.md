@@ -321,3 +321,44 @@ src/utils/
 **What was wrong:** `resourceMap` typed `icon` as `any` — ESLint's `@typescript-eslint/no-explicit-any` flagged this correctly.
 **What was fixed:** Added `import type { LucideIcon } from 'lucide-react'`; replaced `icon: any` with `icon: LucideIcon` in the resource map type.
 **Why:** `any` defeats TypeScript's type safety. `LucideIcon` is the correct type for Lucide icon components and was already available from the installed version.
+
+---
+
+## Section 7 — Type Safety (TypeScript)
+**Completed:** 2026-05-10
+
+---
+
+### Fix 7.1 — resourceMap: `Record<string, …>` → `Record<WeatherCondition, …>`
+**Type:** TYPE
+**File(s) changed:** `src/features/pathfinder/constants.tsx`
+**What was wrong:** `resourceMap` was typed as `Record<string, …>`. Any arbitrary string key was valid, and TypeScript could not verify that all five `WeatherCondition` values were present.
+**What was fixed:** Added `import type { WeatherCondition }` from types; changed the key type to `Record<WeatherCondition, …>`. TypeScript now enforces exhaustive coverage of all five weather conditions.
+**Why:** Using the domain union type as the key makes the exhaustiveness check part of the type system — a missing weather entry becomes a compile error rather than a silent runtime `undefined`.
+
+---
+
+### Fix 7.2 — Define `SourceType` union and tighten `sourceType` field
+**Type:** TYPE
+**File(s) changed:** `src/features/pathfinder/constants.tsx`
+**What was wrong:** Each resource entry's `sourceType` field was typed as `string`. The only valid values are `'University'`, `'Government'`, `'Supplier'`, `'Depot'`, but this constraint was invisible to the type checker.
+**What was fixed:** Added local `type SourceType = 'University' | 'Government' | 'Supplier' | 'Depot'`; changed `sourceType: string` to `sourceType: SourceType` in the resourceMap type.
+**Why:** A `string` field documents nothing about what values are expected and allows typos to silently produce incorrect icon rendering.
+
+---
+
+### Fix 7.3 — `sourceTypeIcon` parameter and return type
+**Type:** TYPE
+**File(s) changed:** `src/features/pathfinder/constants.tsx`
+**What was wrong:** `sourceTypeIcon(type: string): <return inferred>` — the parameter accepted any string and the return type was implicitly inferred.
+**What was fixed:** Changed parameter to `type: SourceType`; added explicit `: JSX.Element` return type annotation.
+**Why:** The call site in `SiteResourceCard` passes `resource.sourceType`, which is now typed as `SourceType`, making the end-to-end flow fully typed. The explicit return type also documents the function's contract clearly.
+
+---
+
+### Fix 7.4 — `getSiteIcon` `status` parameter narrowed from `string` to `'Active' | 'Planning'`
+**Type:** TYPE
+**File(s) changed:** `src/features/expedition/utils/weatherHelpers.tsx`
+**What was wrong:** `getSiteIcon(type: SiteType, status: string)` — `status` was typed as `string`, weaker than `DigSite['status']` which is `'Active' | 'Planning'`.
+**What was fixed:** Changed `status: string` to `status: 'Active' | 'Planning'`.
+**Why:** Narrowing the parameter type documents the function's contract and would catch call sites passing an incorrect string at compile time.

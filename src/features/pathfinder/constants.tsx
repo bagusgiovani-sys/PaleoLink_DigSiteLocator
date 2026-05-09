@@ -1,7 +1,10 @@
 import { Radio, Wrench, Droplets, Box, Zap, Satellite, Camera, Thermometer, GraduationCap, Building2, Truck } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import type { WeatherCondition } from '../../types';
 
-export const resourceMap: Record<string, { tools: { name: string; source: string; sourceType: string; distance: string; eta: string; available: boolean; icon: LucideIcon }[] }> = {
+type SourceType = 'University' | 'Government' | 'Supplier' | 'Depot';
+
+export const resourceMap: Record<WeatherCondition, { tools: { name: string; source: string; sourceType: SourceType; distance: string; eta: string; available: boolean; icon: LucideIcon }[] }> = {
   flood: {
     tools: [
       { name: "LiDAR Ground Scanner", source: "MIT Geosciences Dept.", sourceType: "University", distance: "12 km", eta: "45 min", available: true, icon: Radio },
@@ -44,7 +47,7 @@ export const resourceMap: Record<string, { tools: { name: string; source: string
   },
 };
 
-export const sourceTypeIcon = (type: string) => {
+export const sourceTypeIcon = (type: SourceType): JSX.Element => {
   if (type === 'University') return <GraduationCap className="w-3 h-3" />;
   if (type === 'Government') return <Building2 className="w-3 h-3" />;
   if (type === 'Supplier') return <Truck className="w-3 h-3" />;

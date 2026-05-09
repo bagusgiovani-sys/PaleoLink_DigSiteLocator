@@ -19,7 +19,7 @@ export const getWeatherIcon = (condition: WeatherCondition) => {
   }
 };
 
-export const getSiteIcon = (type: SiteType, status: string) => {
+export const getSiteIcon = (type: SiteType, status: 'Active' | 'Planning') => {
   if (status === 'Planning') {
     return <Wrench className="w-5 h-5 text-slate-900" />;
   }
