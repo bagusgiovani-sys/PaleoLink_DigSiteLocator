@@ -324,6 +324,22 @@ src/utils/
 
 ---
 
+## Section 8 — Security
+**Completed:** 2026-05-10
+
+**All checks passed:** no dangerouslySetInnerHTML, no eval/innerHTML/document.write, no user input, no network calls, no localStorage/cookies, no hardcoded secrets, no environment variables in use, no external links.
+
+---
+
+### Fix 8.1 — Add `.env` and `.env.*` to `.gitignore`
+**Type:** SECURITY
+**File(s) changed:** `.gitignore`
+**What was wrong:** `.gitignore` contained `*.local` (catching `.env.local`, `.env.development.local`, etc.) but did NOT cover a plain `.env` file. A developer adding a `.env` with secrets would silently commit it.
+**What was fixed:** Added `.env` and `.env.*` as explicit ignore patterns at the top of `.gitignore`.
+**Why:** Even though no `.env` files exist now, the pattern is a safety net. Vite reads `VITE_*` variables from `.env` files — if this project ever adds a third-party API key, the gitignore must be ready to catch it before it can be accidentally committed.
+
+---
+
 ## Section 7 — Type Safety (TypeScript)
 **Completed:** 2026-05-10
 
