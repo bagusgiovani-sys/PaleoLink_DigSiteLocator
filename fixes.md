@@ -425,6 +425,36 @@ src/utils/
 
 ---
 
+## Improvement Plan — Final Items
+**Completed:** 2026-05-10
+
+---
+
+### Fix IP.1 — Verified: A11Y items already done in Section 10
+**Type:** A11Y
+**Files:** `SiteDetailPanel.tsx:96`, `WorldMap.tsx:106`
+**Status:** `aria-label="Close"` on the close button and `aria-label={site.name + condition + severity}` on each site marker were both confirmed present from Section 10. Improvement Plan checkboxes updated to `[x]`.
+
+---
+
+### Fix IP.2 — Add onClick handlers to "Document" and "Satellite Scan" buttons
+**Type:** QUAL
+**File(s) changed:** `src/features/expedition/components/SiteDetailPanel.tsx`
+**What was wrong:** The two action buttons in the weather alert section (`Document`, `Satellite Scan`) had no `onClick` handlers — clicking them produced no feedback. For a demo SPA without a backend this is technically fine, but leaves the UI feeling unfinished.
+**What was fixed:** Added `docSubmitted` and `scanSubmitted` boolean state. Each button's `onClick` sets its flag to `true`. The button label changes from `Document` → `Submitted` and `Satellite Scan` → `Submitted` on click. State is local to the panel and resets when the panel is closed.
+**Why:** Buttons with no action are misleading — users expect a response when they interact with a UI control. In-component state toggle is the minimal correct approach for a static SPA.
+
+---
+
+### Fix IP.3 — Upgrade lucide-react from ^0.263.1 to ^1.14.0
+**Type:** DEP
+**File(s) changed:** `package.json`, `package-lock.json`
+**What was wrong:** `lucide-react` was pinned to `^0.263.1` — approximately two years behind the current release (`1.14.0`). The library had a full major version release (`1.0`) with icon rename deprecations.
+**What was fixed:** Ran `npm install lucide-react@latest`. All icon names used in the project (`X`, `AlertTriangle`, `Camera`, `Satellite`, `Gem`, `Users`, `Wrench`, `Box`, `Sun`, `CloudRain`, `CloudLightning`, `Cloud`, `Wind`, `Map`, `FlaskConical`, `ShoppingCart`, `Navigation`, `User`, `Radio`, `Droplets`, `Zap`, `Thermometer`, `GraduationCap`, `Building2`, `Truck`, `CheckCircle`, `MapPin`, `Clock`, `Phone`, `AlertTriangle`) remain valid in v1.14.0 — `tsc --noEmit` and `npm run build` both pass clean.
+**Why:** Keeping dependencies current reduces security exposure and ensures access to new icons and bug fixes.
+
+---
+
 ## Section 7 — Type Safety (TypeScript)
 **Completed:** 2026-05-10
 

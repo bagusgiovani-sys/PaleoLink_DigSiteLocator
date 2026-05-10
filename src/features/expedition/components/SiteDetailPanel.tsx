@@ -41,6 +41,9 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
+  const [docSubmitted, setDocSubmitted] = useState(false);
+  const [scanSubmitted, setScanSubmitted] = useState(false);
+
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (panelRef.current) {
@@ -114,13 +117,19 @@ const SiteDetailPanel = ({ site, onClose }: Props) => {
                     </p>
                     <p className="text-gray-300 text-xs">{site.weather.alertMessage}</p>
                     <div className="flex gap-2 mt-2">
-                      <button className="flex items-center gap-1 px-2 py-1 bg-cyan-500/20 border border-cyan-500/50 rounded text-xs text-cyan-400 hover:bg-cyan-500/30 transition-colors">
+                      <button
+                        onClick={() => setDocSubmitted(true)}
+                        className="flex items-center gap-1 px-2 py-1 bg-cyan-500/20 border border-cyan-500/50 rounded text-xs text-cyan-400 hover:bg-cyan-500/30 transition-colors"
+                      >
                         <Camera className="w-3 h-3" />
-                        Document
+                        {docSubmitted ? 'Submitted' : 'Document'}
                       </button>
-                      <button className="flex items-center gap-1 px-2 py-1 bg-purple-500/20 border border-purple-500/50 rounded text-xs text-purple-400 hover:bg-purple-500/30 transition-colors">
+                      <button
+                        onClick={() => setScanSubmitted(true)}
+                        className="flex items-center gap-1 px-2 py-1 bg-purple-500/20 border border-purple-500/50 rounded text-xs text-purple-400 hover:bg-purple-500/30 transition-colors"
+                      >
                         <Satellite className="w-3 h-3" />
-                        Satellite Scan
+                        {scanSubmitted ? 'Submitted' : 'Satellite Scan'}
                       </button>
                     </div>
                   </div>

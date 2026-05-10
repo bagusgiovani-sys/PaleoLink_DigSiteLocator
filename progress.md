@@ -264,10 +264,10 @@ return <main layout>
 - [x] **[PERF]** Memoize `Math.random()` positions in `WeatherAnimation` (use `useMemo` with stable seed)
 - [x] **[QUAL]** Fix wrong icon: `getWeatherIcon` returns `<CloudSnow>` for `thunderstorm`
 - [x] **[QUAL]** Replace IIFE `{(() => { ... })()}` in safety tab with extracted variable
-- [ ] **[A11Y]** Add `aria-label` to site detail panel close button
-- [ ] **[A11Y]** Add accessible labels to site marker buttons
-- [ ] **[QUAL]** Add `onClick` handlers to "Document" and "Satellite Scan" buttons
-- [ ] **[DEP]** Upgrade `lucide-react` from `^0.263.1` to current (check for icon renames first)
+- [x] **[A11Y]** Add `aria-label` to site detail panel close button
+- [x] **[A11Y]** Add accessible labels to site marker buttons
+- [x] **[QUAL]** Add `onClick` handlers to "Document" and "Satellite Scan" buttons
+- [x] **[DEP]** Upgrade `lucide-react` from `^0.263.1` to `^1.14.0` (no icon renames needed — all names valid)
 - [x] **[QUAL]** Add `typescript` as explicit `devDependency`
 
 ---
@@ -286,3 +286,4 @@ return <main layout>
 | 4 (cont) | 2026-05-10 | —               | Section 8 complete — 1 fix: .env and .env.* added to .gitignore; all other checks pass clean |
 | 4 (cont) | 2026-05-10 | —               | Section 9 complete — Vitest installed; 4 test files, 26 tests all passing; test/test:watch scripts added |
 | 4 (cont) | 2026-05-10 | —               | Section 10 complete — 6 a11y fixes: aria-label on 4 icon-only buttons, role=tab+aria-selected on both tab sets, role=tablist on both containers |
+| 5       | 2026-05-10 | —                | Improvement Plan complete — verified A11Y items done; added onClick to Document/Satellite Scan buttons; upgraded lucide-react 0.263.1 → 1.14.0 (build + tsc clean) |
