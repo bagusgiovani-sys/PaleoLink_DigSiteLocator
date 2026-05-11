@@ -1,7 +1,10 @@
+import type { LucideIcon } from 'lucide-react';
+
 export type WeatherCondition = 'sunny' | 'rainy' | 'thunderstorm' | 'flood' | 'typhoon';
 export type SiteType = 'fossil' | 'archaeological';
 export type WeatherSeverity = 'good' | 'warning' | 'catastrophic';
 export type MainTab = 'expedition' | 'scientists' | 'marketplace' | 'pathfinder';
+export type SourceType = 'University' | 'Government' | 'Supplier' | 'Depot';
 
 export interface SafetyProfile {
   groundType: 'Clay' | 'Sand' | 'Rocky' | 'Limestone';
@@ -60,4 +63,14 @@ export interface MarketItem {
   priceStatus: string;
   seller: string;
   rating: number;
+}
+
+export interface Resource {
+  name: string;
+  source: string;
+  sourceType: SourceType;
+  distance: string;
+  eta: string;
+  available: boolean;
+  icon: LucideIcon;
 }
