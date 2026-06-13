@@ -1,73 +1,38 @@
-# React + TypeScript + Vite
+PaleoLink - App Summary
+Core Concept
+PaleoLink is an "Uber for Paleontology" — a futuristic, Jurassic World Evolution-inspired platform that connects paleontologists, excavation teams, fossil hunters, and scientists globally. Think of it as a command center for managing, discovering, and preserving geological and archaeological sites worldwide.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Three Main Modules
+1. 🗺️ Expedition Map
+The heart of the app — an interactive world map showing all active dig sites with:
 
-Currently, two official plugins are available:
+Color-coded markers (Green = Safe, Yellow = Warning, Red = Critical) based on real-time weather severity
+Site type icons — Fossil sites vs Archaeological sites vs Planning sites
+Animated weather overlays directly on the map (rain, thunderstorm, flood, typhoon, sunny)
+Clickable site popups with three tabs:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Site Details — Discoveries, excavation team, required tools
+Safety Profile — Risk scoring system (Low/Medium/High) based on ground type, excavation depth, land slope, water risk, and collapse history
+3D Preservation Data — Digital 3D scanned models of fossils/artifacts, with alerts for missing scans
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+2. 🔬 Scientists (Recruitment)
+A recruitment directory inspired by Jurassic World Evolution's scientist system:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Scientist cards showing skills (Logistics, Genetics, Welfare)
+Traits and specializations per scientist
+Bio and salary information
+One-click Recruit Scientist functionality
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+3. 🛒 Marketplace
+A trading platform for fossil discoveries and specimens:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+List view showing available items with name, amount, appeal rating, and price
+Price status indicators (Good price, Fair price, Premium)
+Refresh List feature to get latest listings
+Buy button per item
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Key Features
+FeatureDescription🌍 World MapReal background map with grid overlay⛈️ Live Weather5 animated conditions — Rainy, Thunderstorm, Flood, Sunny, Typhoon🚨 Weather AlertsAuto-triggers Document and Satellite Scan actions🦴 Site Safety Profile5-factor risk scoring system with visual indicator📦 3D PreservationDigital scan viewer, flags missing documentation🎬 Intro AnimationCinematic boot screen on launch📱 ResponsiveWorks on mobile and desktop
